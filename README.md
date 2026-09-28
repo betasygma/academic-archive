@@ -131,6 +131,8 @@ Sensitive information, credentials, private datasets, and other materials that s
 
 ## License
 
-This repository primarily serves as an academic archive.
+Unless otherwise stated, the original notes, documentation, reports, and other non-code materials in this repository are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
-Individual projects and materials may have different licensing or usage conditions. Refer to the corresponding project documentation where applicable.
+Original source code is licensed under the MIT License where a separate `LICENSE` file is provided within the relevant project directory.
+
+Third-party materials, including lecture slides, assignment questions, datasets, libraries, images, and other materials not created by the repository author, are not covered by this license and remain subject to their respective licenses or copyright.
