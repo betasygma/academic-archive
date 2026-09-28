@@ -36,7 +36,11 @@ academic-archive/
 ├── semester-05/
 ├── semester-06/
 ├── semester-07/
-└── semester-08/
+├── semester-08/
+└── docs/
+	├── academic-roadmap.md
+	├── skills.md
+	└── conventions.md
 ```
 
 Each semester contains documentation for the courses taken during that period.
@@ -110,6 +114,12 @@ Individual course directories may contain:
 The repository contains academic materials in both English and Indonesian where appropriate.
 
 English is used as the primary language for portfolio-oriented documentation, while Indonesian may be retained or included for course-specific academic materials.
+
+Repository-wide references:
+
+* [Academic roadmap](./docs/academic-roadmap.md)
+* [Technical skills](./docs/skills.md)
+* [Repository conventions](./docs/conventions.md)
 
 ---
 
