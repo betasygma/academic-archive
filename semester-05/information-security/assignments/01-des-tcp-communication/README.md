@@ -8,7 +8,7 @@ Manual DES Implementation for Two-Way TCP Communication
 
 **Course:** Information Security — Individual Assignment
 <br>
-**Author:** Bara S. Rohmani (Api)
+**Author:** Bara S. Rohmani (SID 5025241144)
 <br>
 **Institution:** Informatics Engineering, ITS Surabaya
 
