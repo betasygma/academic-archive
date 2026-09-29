@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tugas 1 Grafika Komputer - Gunung, Matahari, dan Jalan</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="page-header">
+      <h1>Tugas 1 Grafika Komputer</h1>
+      <p><b>Reproduksi ilustrasi 2D menggunakan WebGL murni + animasi</b></p>
+      <h4>Bara Semangat Rohmani (NRP 5025241144)</h4>
+    </header>
+
+    <section class="comparison" aria-label="Perbandingan gambar referensi dan hasil reproduksi">
+      <figure class="panel">
+        <figcaption>Gambar Referensi</figcaption>
+        <img
+          src="./docs/picture.jpg"
+          alt="Gambar referensi ilustrasi gunung, matahari, rumah, pohon, dan jalan"
+        />
+      </figure>
+
+      <figure class="panel canvas-panel">
+        <figcaption>Hasil Reproduksi WebGL</figcaption>
+        <canvas id="glCanvas" width="900" height="600">
+          Browser tidak mendukung elemen canvas.
+        </canvas>
+        <p class="hint">Klik canvas untuk mengulang seluruh animasi.</p>
+      </figure>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
