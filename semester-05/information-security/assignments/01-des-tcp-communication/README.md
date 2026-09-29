@@ -2,6 +2,34 @@
 
 Manual DES Implementation for Two-Way TCP Communication
 
+[![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)](https://www.python.org/)
+[![TCP](https://img.shields.io/badge/Protocol-TCP-green)](#tcp-message-framing)
+[![DES](https://img.shields.io/badge/Cipher-DES-orange)](#cryptographic-design)
+
+**Course:** Information Security — Individual Assignment
+<br>
+**Author:** Bara S. Rohmani (Api)
+<br>
+**Institution:** Informatics Engineering, ITS Surabaya
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Objectives](#objectives)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Communication Flow](#communication-flow)
+- [Cryptographic Design](#cryptographic-design)
+- [TCP Message Framing](#tcp-message-framing)
+- [Project Structure](#project-structure)
+- [Configuration](#configuration)
+- [Running the Application](#running-the-application)
+- [DES Testing](#des-testing)
+- [Wireshark Testing](#wireshark-testing)
+- [Security Considerations](#security-considerations)
+- [Limitations](#limitations)
+- [References](#references)
+
 ## Overview
 
 This project implements a manual Data Encryption Standard (DES) encryption and decryption system integrated with a two-way TCP socket communication between two independent Python processes: **Sender** and **Receiver**.
@@ -55,48 +83,32 @@ This project aims to demonstrate:
 ## Architecture
 
 The system consists of two independent processes.
+The communication architecture can be summarized as:
 
-```text
-┌─────────────────────┐
-│       Sender        │
-│                     │
-│  Plaintext Input    │
-│         │           │
-│         ▼           │
-│    PKCS#7 Padding   │
-│         │           │
-│         ▼           │
-│     DES-CBC         │
-│         │           │
-│         ▼           │
-│   IV + Ciphertext   │
-└──────────┬──────────┘
-           │
-           │ TCP
-           │ 127.0.0.1:5000
-           │
-┌──────────▼──────────┐
-│      Receiver       │
-│                     │
-│   IV + Ciphertext   │
-│         │           │
-│         ▼           │
-│     DES-CBC         │
-│         │           │
-│         ▼           │
-│ Plaintext Output    │
-└─────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Sender
+        A[Plaintext Input] --> B[PKCS#7 Padding]
+        B --> C[DES-CBC Encrypt]
+        C --> D[IV + Ciphertext]
+    end
+    D -->|"TCP 127.0.0.1:5000"| E
+    subgraph Receiver
+        E[IV + Ciphertext] --> F[DES-CBC Decrypt]
+        F --> G[Plaintext Output]
+    end
 ```
 
 Both sides are also capable of sending encrypted responses through the same TCP connection.
 
 ```text
-Sender                         Receiver
-  │                                │
-  │───── encrypted message ───────>│
-  │                                │
-  │<───── encrypted response ──────│
-  │                                │
+Sender                              Receiver
+
+  │                                    │
+  │───── encrypted message ──────────>│
+  │                                    │
+  │<───── encrypted response ─────────│
+  │                                    │
 ```
 
 ---
@@ -226,7 +238,13 @@ The `recv_exact()` function ensures that the expected number of bytes is receive
 ├── des_manual.py
 ├── sender.py
 ├── receiver.py
-└── test_des.py
+├── test_des.py
+└── docs/
+    └── images/
+        ├── two-way-communication-1.png
+        ├── two-way-communication-2.png
+        ├── des-testing.png
+        └── wireshark-capture.png
 ```
 
 ### `des_manual.py`
@@ -342,7 +360,7 @@ python receiver.py
 Expected output:
 
 ```text
-[receiver] Menunggu koneksi di 127.0.0.1:5000 ...
+[receiver] Listening for a connection at 127.0.0.1:5000 ...
 ```
 
 ### 2. Start the Sender
@@ -356,14 +374,14 @@ python sender.py
 Expected output:
 
 ```text
-[sender] Terhubung ke 127.0.0.1:5000
+[sender] Connected to 127.0.0.1:5000
 ```
 
 The Receiver should then report an established connection.
 
 ---
 
-## Sending Messages
+### Sending Messages
 
 After both processes are connected, either side can enter a message.
 
@@ -397,7 +415,7 @@ The Sender will receive and decrypt the response.
 
 ---
 
-## Terminating the Application
+### Terminating the Application
 
 Type:
 
@@ -415,7 +433,16 @@ Alternatively, press `Ctrl+C`.
 
 ---
 
-## Testing
+### Example Communication
+
+The following screenshot shows the two independent processes communicating through TCP.
+
+![Two-way communication from Sender](docs/images/two-way-communication-2.png)
+![Two-way communication from Receiver](docs/images/two-way-communication-1.png)
+
+---
+
+## DES Testing
 
 The DES implementation should be tested independently before testing the TCP application.
 
@@ -443,8 +470,16 @@ The test also verifies that:
 ```text
 DES Decrypt(DES Encrypt(plaintext)) == plaintext
 ```
+> **Note on the test vector:** The key/plaintext/ciphertext triple above is a widely used
+> DES worked-example (not sourced directly from a NIST publication). It was cross-checked
+> manually against independent implementations. For NIST-sourced values, see the
+> Variable Key/Plaintext Known Answer Tests in SP 800-17, Appendix A–B.
 
 Additional tests verify PKCS#7 padding and DES-CBC round-trip behavior for messages with different lengths.
+
+Example test output:
+
+![DES testing](docs/images/des-testing.png)
 
 ---
 
@@ -464,16 +499,21 @@ A TCP filter can be used to focus on the application traffic:
 tcp.port == 5000
 ```
 
+Example capture:
+
+![Wireshark TCP capture](docs/images/wireshark-capture.png)
+
 The captured payload should contain the application framing and encrypted payload rather than the original plaintext message.
 
 The payload structure is:
 
 ```text
-Length Prefix
-    +
-IV
-    +
-Ciphertext
++----------------+-------------------------+-----------------------+
+| Length Prefix  |            IV           |      Ciphertext       |
+|    4 byte      |          8 byte         |    variable length    |
+|                |                         |                       |
+|  00 00 00 18   | 89 84 34 f5 b6 f9 51 0d | 16 26 f0 ... b5 df fe |
++----------------+-------------------------+-----------------------+
 ```
 
 The IV is intentionally transmitted and is not considered secret.
@@ -566,7 +606,8 @@ National Institute of Standards and Technology (NIST).
 
 **FIPS PUB 46-3: Data Encryption Standard (DES).**
 
-[NIST FIPS 46-3](https://csrc.nist.gov/pubs/fips/46-3/final?utm_source=chatgpt.com)
+NIST FIPS 46-3:
+[https://csrc.nist.gov/pubs/fips/46-3/final](https://csrc.nist.gov/pubs/fips/46-3/final)
 
 ### NIST DES Validation Information
 
@@ -574,7 +615,8 @@ NIST Cryptographic Algorithm Validation Program.
 
 The historical DES validation information provides additional context regarding DES testing and its retired status.
 
-[NIST DES Validation Information](https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Retired-Testing?utm_source=chatgpt.com)
+NIST DES Validation Information:
+[https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Retired-Testing](https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Retired-Testing)
 
 ---
 

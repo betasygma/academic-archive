@@ -1,11 +1,9 @@
 """
 receiver.py
 
-TCP server untuk simulasi komunikasi dua arah menggunakan
-DES-CBC sebagai mekanisme enkripsi pesan.
-
-Receiver menunggu koneksi dari sender pada 127.0.0.1:5000.
-Shared key diketahui oleh kedua pihak dan tidak dikirim melalui socket.
+TCP server for simulating two-way communication using DES-CBC for message encryption.
+The receiver waits for a sender connection at 127.0.0.1:5000.
+Both parties know the shared key, which is not sent over the socket.
 """
 
 import socket
@@ -18,13 +16,13 @@ HOST = "127.0.0.1"
 PORT = 5000
 
 # Educational/demo key.
-# Key harus sama dengan key pada sender.py.
-# Key tidak dikirim melalui socket.
+# The key must match the key in sender.py.
+# The key is not sent over the socket.
 KEY = bytes.fromhex("133457799BBCDFF1")
 
 
 def recv_exact(conn: socket.socket, n: int) -> bytes:
-    """Menerima tepat n byte dari socket."""
+    """Receive exactly n bytes from the socket."""
     buffer = bytearray()
 
     while len(buffer) < n:
@@ -32,7 +30,7 @@ def recv_exact(conn: socket.socket, n: int) -> bytes:
 
         if not chunk:
             raise ConnectionError(
-                "Koneksi terputus saat menerima data"
+                "Connection closed while receiving data"
             )
 
         buffer.extend(chunk)
@@ -41,19 +39,16 @@ def recv_exact(conn: socket.socket, n: int) -> bytes:
 
 
 def send_message(conn: socket.socket, payload: bytes) -> None:
-    """
-    Mengirim satu application message menggunakan
-    4-byte big-endian length prefix.
-    """
+    """Send one application message with a 4-byte big-endian length prefix."""
     if len(payload) > 0xFFFFFFFF:
-        raise ValueError("Payload terlalu besar")
+        raise ValueError("Payload is too large")
 
     header = len(payload).to_bytes(4, byteorder="big")
     conn.sendall(header + payload)
 
 
 def recv_message(conn: socket.socket) -> bytes:
-    """Menerima satu application message berdasarkan length prefix."""
+    """Receive one application message using its length prefix."""
     header = recv_exact(conn, 4)
     length = int.from_bytes(header, byteorder="big")
 
@@ -61,13 +56,13 @@ def recv_message(conn: socket.socket) -> bytes:
 
 
 def listen_loop(conn: socket.socket) -> None:
-    """Menerima dan mendekripsi pesan dari sender."""
+    """Receive and decrypt messages from the sender."""
     try:
         while True:
             payload = recv_message(conn)
 
             print(
-                f"\n[ciphertext diterima, {len(payload)} byte]"
+                f"\n[Ciphertext received: {len(payload)} bytes]"
             )
             print(f"[payload hex] {payload.hex()}")
 
@@ -76,19 +71,19 @@ def listen_loop(conn: socket.socket) -> None:
 
                 try:
                     message = plaintext.decode("utf-8")
-                    print(f"[plaintext] {message}")
+                    print(f"[Plaintext] {message}")
                 except UnicodeDecodeError:
                     print(
-                        f"[!] Plaintext bukan UTF-8: {plaintext!r}"
+                        f"[!] Plaintext is not valid UTF-8: {plaintext!r}"
                     )
 
             except ValueError as error:
-                print(f"[!] Gagal mendekripsi pesan: {error}")
+                print(f"[!] Failed to decrypt message: {error}")
 
             print("> ", end="", flush=True)
 
     except ConnectionError:
-        print("\n[receiver] Sender menutup koneksi.")
+        print("\n[receiver] Sender closed the connection.")
 
 
 def main() -> None:
@@ -107,13 +102,13 @@ def main() -> None:
         server_sock.listen(1)
 
         print(
-            f"[receiver] Menunggu koneksi di "
+            f"[receiver] Listening for a connection at "
             f"{HOST}:{PORT} ..."
         )
 
         conn, addr = server_sock.accept()
 
-        print(f"[receiver] Terhubung dengan {addr}")
+        print(f"[receiver] Connected to {addr}")
 
         with conn:
             listener = threading.Thread(
@@ -138,7 +133,7 @@ def main() -> None:
             except (EOFError, KeyboardInterrupt):
                 print()
 
-        print("[receiver] Selesai.")
+        print("[receiver] Finished.")
 
 
 if __name__ == "__main__":

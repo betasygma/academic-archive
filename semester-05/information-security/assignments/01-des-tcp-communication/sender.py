@@ -1,11 +1,8 @@
 """
 sender.py
 
-TCP client untuk simulasi komunikasi dua arah menggunakan
-DES-CBC sebagai mekanisme enkripsi pesan.
-
-Sender dan receiver menggunakan shared key yang telah diketahui
-sebelumnya. Key tidak pernah dikirim melalui koneksi TCP.
+TCP client for simulating two-way communication using DES-CBC for message encryption.
+The sender and receiver use a pre-shared key, which is never sent over the TCP connection.
 """
 
 import socket
@@ -18,13 +15,13 @@ HOST = "127.0.0.1"
 PORT = 5000
 
 # Educational/demo key.
-# Key harus sama dengan key pada receiver.py.
-# Key tidak dikirim melalui socket.
+# The key must match the key in receiver.py.
+# The key is not sent over the socket.
 KEY = bytes.fromhex("133457799BBCDFF1")
 
 
 def recv_exact(conn: socket.socket, n: int) -> bytes:
-    """Menerima tepat n byte dari socket."""
+    """Receive exactly n bytes from the socket."""
     buffer = bytearray()
 
     while len(buffer) < n:
@@ -32,7 +29,7 @@ def recv_exact(conn: socket.socket, n: int) -> bytes:
 
         if not chunk:
             raise ConnectionError(
-                "Koneksi terputus saat menerima data"
+                "Connection closed while receiving data"
             )
 
         buffer.extend(chunk)
@@ -41,19 +38,16 @@ def recv_exact(conn: socket.socket, n: int) -> bytes:
 
 
 def send_message(conn: socket.socket, payload: bytes) -> None:
-    """
-    Mengirim satu application message menggunakan
-    4-byte big-endian length prefix.
-    """
+    """Send one application message with a 4-byte big-endian length prefix."""
     if len(payload) > 0xFFFFFFFF:
-        raise ValueError("Payload terlalu besar")
+        raise ValueError("Payload is too large")
 
     header = len(payload).to_bytes(4, byteorder="big")
     conn.sendall(header + payload)
 
 
 def recv_message(conn: socket.socket) -> bytes:
-    """Menerima satu application message berdasarkan length prefix."""
+    """Receive one application message using its length prefix."""
     header = recv_exact(conn, 4)
     length = int.from_bytes(header, byteorder="big")
 
@@ -61,13 +55,13 @@ def recv_message(conn: socket.socket) -> bytes:
 
 
 def listen_loop(conn: socket.socket) -> None:
-    """Menerima dan mendekripsi pesan dari receiver."""
+    """Receive and decrypt messages from the receiver."""
     try:
         while True:
             payload = recv_message(conn)
 
             print(
-                f"\n[ciphertext diterima, {len(payload)} byte]"
+                f"\n[Ciphertext received: {len(payload)} bytes]"
             )
             print(f"[payload hex] {payload.hex()}")
 
@@ -76,19 +70,19 @@ def listen_loop(conn: socket.socket) -> None:
 
                 try:
                     message = plaintext.decode("utf-8")
-                    print(f"[plaintext] {message}")
+                    print(f"[Plaintext] {message}")
                 except UnicodeDecodeError:
                     print(
-                        f"[!] Plaintext bukan UTF-8: {plaintext!r}"
+                        f"[!] Plaintext is not valid UTF-8: {plaintext!r}"
                     )
 
             except ValueError as error:
-                print(f"[!] Gagal mendekripsi pesan: {error}")
+                print(f"[!] Failed to decrypt message: {error}")
 
             print("> ", end="", flush=True)
 
     except ConnectionError:
-        print("\n[sender] Receiver menutup koneksi.")
+        print("\n[sender] Receiver closed the connection.")
 
 
 def main() -> None:
@@ -100,7 +94,7 @@ def main() -> None:
         sock.connect((HOST, PORT))
 
         print(
-            f"[sender] Terhubung ke {HOST}:{PORT}"
+            f"[sender] Connected to {HOST}:{PORT}"
         )
 
         listener = threading.Thread(
@@ -125,7 +119,7 @@ def main() -> None:
         except (EOFError, KeyboardInterrupt):
             print()
 
-        print("[sender] Selesai.")
+        print("[sender] Finished.")
 
 
 if __name__ == "__main__":

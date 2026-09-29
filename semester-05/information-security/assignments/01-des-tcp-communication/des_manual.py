@@ -96,7 +96,7 @@ def left_rotate(bits: list, n: int) -> list:
 
 
 def generate_subkeys(key: bytes) -> list:
-    assert len(key) == 8, "key DES harus 8 byte (64 bit)"
+    assert len(key) == 8, "DES key must be 8 bytes (64 bits)"
 
     key_bits = bytes_to_bits(key)
     cd = permute(key_bits, PC1)
@@ -187,13 +187,13 @@ BLOCK_SIZE = 8
 
 def xor_bits(a: list[int], b: list[int]) -> list[int]:
     if len(a) != len(b):
-        raise ValueError("Panjang bit sequence harus sama")
+        raise ValueError("Bit sequences must have the same length")
     return [x ^ y for x, y in zip(a, b)]
 
 
 def sbox_substitute(bits48: list[int]) -> list[int]:
     if len(bits48) != 48:
-        raise ValueError("Input S-box harus berukuran 48 bit")
+        raise ValueError("S-box input must be 48 bits long")
 
     out = []
 
@@ -223,10 +223,10 @@ def sbox_substitute(bits48: list[int]) -> list[int]:
 
 def f(r: list[int], subkey: list[int]) -> list[int]:
     if len(r) != 32:
-        raise ValueError("R harus berukuran 32 bit")
+        raise ValueError("R must be 32 bits long")
 
     if len(subkey) != 48:
-        raise ValueError("Subkey harus berukuran 48 bit")
+        raise ValueError("Subkey must be 48 bits long")
 
     expanded = permute(r, E)
     mixed = xor_bits(expanded, subkey)
@@ -237,10 +237,10 @@ def f(r: list[int], subkey: list[int]) -> list[int]:
 
 def _crypt_block(block: bytes, subkeys: list[list[int]]) -> bytes:
     if len(block) != BLOCK_SIZE:
-        raise ValueError("Blok DES harus berukuran 8 byte")
+        raise ValueError("DES block must be 8 bytes long")
 
     if len(subkeys) != 16:
-        raise ValueError("DES membutuhkan 16 subkey")
+        raise ValueError("DES requires 16 subkeys")
 
     bits = initial_permutation(bytes_to_bits(block))
 
@@ -267,53 +267,53 @@ def des_decrypt_block(ciphertext: bytes, key: bytes) -> bytes:
 
 def pkcs7_pad(data: bytes) -> bytes:
     """
-    Menambahkan PKCS#7 padding agar panjang data menjadi kelipatan 8 byte.
-    Jika data sudah merupakan kelipatan 8 byte, satu blok padding penuh
-    tetap ditambahkan.
+    Add PKCS#7 padding so the data length is a multiple of 8 bytes.
+    If the data length is already a multiple of 8 bytes, a full padding
+    block is still added.
     """
     pad_len = BLOCK_SIZE - (len(data) % BLOCK_SIZE)
     return data + bytes([pad_len]) * pad_len
 
 
 def pkcs7_unpad(data: bytes) -> bytes:
-    """Hapus dan validasi PKCS#7 padding."""
+    """Remove and validate PKCS#7 padding."""
     if not data or len(data) % BLOCK_SIZE != 0:
-        raise ValueError("Data untuk unpadding harus kelipatan 8 byte")
+        raise ValueError("Data to unpad must be a multiple of 8 bytes")
 
     pad_len = data[-1]
 
     if not 1 <= pad_len <= BLOCK_SIZE:
-        raise ValueError("Padding PKCS#7 tidak valid")
+        raise ValueError("Invalid PKCS#7 padding")
 
     padding = bytes([pad_len]) * pad_len
 
     if data[-pad_len:] != padding:
-        raise ValueError("Padding PKCS#7 tidak valid")
+        raise ValueError("Invalid PKCS#7 padding")
 
     return data[:-pad_len]
 
 
 def xor_bytes(a: bytes, b: bytes) -> bytes:
     if len(a) != len(b):
-        raise ValueError("Panjang byte sequence harus sama")
+        raise ValueError("Byte sequences must have the same length")
 
     return bytes(x ^ y for x, y in zip(a, b))
 
 
 def des_cbc_encrypt(plaintext: bytes, key: bytes) -> bytes:
     """
-    Enkripsi plaintext menggunakan DES-CBC.
+    Encrypt plaintext using DES-CBC.
 
-    Format hasil:
+    Result format:
         IV (8 byte) + ciphertext
 
-    IV dibuat secara acak menggunakan os.urandom().
-    IV tidak perlu dirahasiakan dan dikirim bersama ciphertext.
+    The IV is generated randomly using os.urandom().
+    The IV does not need to be secret and is sent with the ciphertext.
     """
     import os
 
     if len(key) != BLOCK_SIZE:
-        raise ValueError("Key DES harus berukuran 8 byte")
+        raise ValueError("DES key must be 8 bytes long")
 
     iv = os.urandom(BLOCK_SIZE)
     padded = pkcs7_pad(plaintext)
@@ -335,21 +335,21 @@ def des_cbc_encrypt(plaintext: bytes, key: bytes) -> bytes:
 
 def des_cbc_decrypt(payload: bytes, key: bytes) -> bytes:
     """
-    Dekripsi payload DES-CBC.
+    Decrypt a DES-CBC payload.
 
     Format payload:
         IV (8 byte) + ciphertext
 
-    Mengembalikan plaintext asli setelah PKCS#7 padding dihapus.
+    Return the original plaintext after removing PKCS#7 padding.
     """
     if len(key) != BLOCK_SIZE:
-        raise ValueError("Key DES harus berukuran 8 byte")
+        raise ValueError("DES key must be 8 bytes long")
 
     minimum_length = BLOCK_SIZE * 2
 
     if len(payload) < minimum_length:
         raise ValueError(
-            "Payload terlalu pendek untuk DES-CBC"
+            "Payload is too short for DES-CBC"
         )
 
     iv = payload[:BLOCK_SIZE]
@@ -357,7 +357,7 @@ def des_cbc_decrypt(payload: bytes, key: bytes) -> bytes:
 
     if len(ciphertext) % BLOCK_SIZE != 0:
         raise ValueError(
-            "Ciphertext DES-CBC harus merupakan kelipatan 8 byte"
+            "DES-CBC ciphertext must be a multiple of 8 bytes"
         )
 
     plaintext_padded = bytearray()

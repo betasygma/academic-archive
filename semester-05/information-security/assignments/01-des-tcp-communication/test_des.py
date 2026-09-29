@@ -11,9 +11,7 @@ from des_manual import (
 
 
 class TestDESBlock(unittest.TestCase):
-    """
-    Known Answer Test berdasarkan contoh DES standar.
-    """
+    """Known-answer test based on a standard DES example."""
 
     def test_standard_des_vector(self):
         key = bytes.fromhex("133457799BBCDFF1")
@@ -84,7 +82,7 @@ class TestDESCBC(unittest.TestCase):
             b"Hello Receiver",
             b"12345678",
             b"123456789",
-            "Pesan UTF-8: Halo dari sender!".encode("utf-8"),
+            "UTF-8 message: Hello from the sender!".encode("utf-8"),
         ]
 
         for message in messages:
