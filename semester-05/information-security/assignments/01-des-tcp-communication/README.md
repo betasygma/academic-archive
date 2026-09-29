@@ -101,57 +101,43 @@ flowchart TB
 
 Both sides are also capable of sending encrypted responses through the same TCP connection.
 
-```text
-Sender                              Receiver
+```mermaid
+sequenceDiagram
+    participant Sender
+    participant Receiver
 
-  │                                    │
-  │───── encrypted message ──────────>│
-  │                                    │
-  │<───── encrypted response ─────────│
-  │                                    │
+    loop until exit/quit
+        Sender->>Receiver: encrypted message
+        Receiver-->>Sender: encrypted response
+    end
 ```
 
 ---
 
 ## Communication Flow
 
-For every message, the following process is performed:
+For every message, the following process is performed by the sending side,
+and its mirror by the receiving side:
 
-```text
-Plaintext
-    │
-    ▼
-UTF-8 Encoding
-    │
-    ▼
-PKCS#7 Padding
-    │
-    ▼
-DES-CBC Encryption
-    │
-    ▼
-IV + Ciphertext
-    │
-    ▼
-TCP Length-Prefixed Message
-    │
-    ▼
-Receiver
-    │
-    ▼
-DES-CBC Decryption
-    │
-    ▼
-PKCS#7 Unpadding
-    │
-    ▼
-UTF-8 Decoding
-    │
-    ▼
-Plaintext
+```mermaid
+flowchart TB
+    A[Plaintext] --> B[UTF-8 Encoding]
+    B --> C[PKCS#7 Padding]
+    C --> D[DES-CBC Encryption]
+    D --> E["IV + Ciphertext"]
+    E --> F[TCP Length-Prefixed Message]
+    F -->|network| G[Receiver]
+    G --> H[DES-CBC Decryption]
+    H --> I[PKCS#7 Unpadding]
+    I --> J[UTF-8 Decoding]
+    J --> K[Plaintext]
 ```
 
-The reverse process is used when the other party sends a response.
+Both Sender and Receiver run this exact same pipeline — whichever side is
+currently sending a message executes steps A–F, and whichever side is
+currently receiving executes steps G–K. When the other party sends a
+response, it runs the identical pipeline in the same direction, not a
+reversed one.
 
 ---
 
