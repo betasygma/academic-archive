@@ -1,0 +1,151 @@
+contacts:
+  name: Riley Example
+  title: Computer Science Student, Northstar Institute of Technology
+  email: riley.example@example.com
+  address: "Sample City, Example Country"
+  location: Example Country
+  linkedin:
+    url: https://example.com/riley-example/linkedin
+    displayText: riley-example
+  github:
+    url: https://example.com/riley-example/code
+    displayText: riley-example
+  website:
+    url: "https://example.com/riley-example"
+    displayText: example.com/riley-example
+
+position: Computer Science Student
+
+tagline: Computer Science student with sample experience in project coordination, data organization, and peer learning. Interested in building clear, accessible tools and communicating technical ideas through thoughtful documentation.
+
+jobs:
+  - position: Project Coordination Lead
+    company:
+      name: Example Student Society
+      link: ""
+    from: "2025 Sep."
+    to: "present"
+    description:
+      - Coordinate a sample team of 5 volunteers and help organize activities for a student community of 40 members.
+    location: Sample City, Example Country
+  - position: Records Coordinator
+    company:
+      name: Northstar Computing Association
+      link: ""
+    from: "2025 Jan."
+    to: "2025 Aug."
+    description:
+      - Maintained sample administrative records and prepared meeting documentation.
+      - Organized a mock directory for a 30-member student cohort.
+    location: Sample City, Example Country
+  - position: Peer Learning Facilitator
+    company:
+      name: Open Learning Collective
+      link: ""
+    from: "2024 Sep."
+    to: "2025 May"
+    description:
+      - Facilitated practice discussions and small-group learning sessions.
+      - Prepared sample learning materials for introductory computing topics.
+    location: Example Country
+  - position: Data Assistant
+    company:
+      name: Sample Research Forum
+      link: ""
+    from: "2024 Jun."
+    to: "2024 Aug."
+    description:
+      - Cleaned and categorized a fictional event-registration dataset.
+      - Prepared example attendance summaries and participant materials.
+      - Supported check-in workflow testing for a sample event.
+    location: Example Country
+
+objective: To develop practical software and data skills through collaborative projects, careful problem solving, and clear technical communication.
+
+education:
+  - place:
+      name: Example Primary School
+      link: ""
+    degree: "Primary School"
+    major: General Studies
+    track: General Studies
+    from: "2012"
+    to: "2018"
+    location: Sample City, Example Country
+  - place:
+      name: Example Junior School
+      link: ""
+    degree: "Secondary School"
+    major: General Studies
+    track: General Studies
+    from: "2018"
+    to: "2021"
+    location: Sample City, Example Country
+  - place:
+      name: Northstar Preparatory School
+      link: ""
+    degree: "High School Diploma"
+    major: Science
+    track: Science
+    from: "2021"
+    to: "2024"
+    location: Sample City, Example Country
+  - place:
+      name: Northstar Institute of Technology
+      link: "https://example.com/northstar-institute"
+    degree: "B.Sc. (in progress)"
+    major: Computer Science
+    track: Software Systems
+    from: "2024"
+    to: "present"
+    location: Sample City, Example Country
+
+skills:
+  - Document Preparation
+  - Spreadsheet Tools
+  - Data Organization
+  - Basic Interface Design
+  - Technical Writing
+
+technical_expertise:
+  - name: English
+    level: 4
+  - name: Spanish
+    level: 2
+
+methodology:
+  - Analytical Thinking
+  - Attention to Detail
+  - Problem-Solving
+  - Creative Exploration
+  - Collaboration
+  - Adaptability
+
+contributions:
+  - name: "Sample Campus Forum - Registration Workflow"
+    year: "2025"
+    description: Designed a fictional registration workflow for a sample campus event with 450 mock attendees.
+  - name: "Peer Learning Survey - Example Findings"
+    year: "2024"
+    description: Prepared a demonstration survey summary with synthetic responses and illustrative satisfaction measures.
+
+media_picks:
+  - title: "The Cartographer's Archive"
+    romanized: "The Cartographer's Archive"
+    original: "The Cartographer's Archive"
+    medium: Novel
+    why: A fictional story about mapping unfamiliar places through patience, observation, and careful note-taking.
+  - title: "Orbit of Glass"
+    romanized: "Orbit of Glass"
+    original: "Orbit of Glass"
+    medium: Animation
+    why: A fictional science-fiction story about a small team learning to solve difficult problems together.
+  - title: "A Quiet Algorithm"
+    romanized: "A Quiet Algorithm"
+    original: "A Quiet Algorithm"
+    medium: Documentary
+    why: A fictional documentary concept about designing technology with care for the people who use it.
+
+aspiration: To grow into a computing professional who builds reliable, accessible tools and contributes to collaborative projects with practical value.
+
+education_critique: Learning opportunities should be understandable and accessible. Clear information, supportive guidance, and flexible resources can help students make informed choices about their education.
