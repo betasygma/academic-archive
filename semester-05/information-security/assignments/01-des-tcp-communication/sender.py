@@ -11,7 +11,7 @@ import threading
 from des_manual import des_cbc_decrypt, des_cbc_encrypt
 
 
-HOST = "127.0.0.1"
+HOST = "192.168.1.6"
 PORT = 5000
 
 # Educational/demo key.
