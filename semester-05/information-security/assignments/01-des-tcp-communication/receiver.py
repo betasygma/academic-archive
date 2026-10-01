@@ -2,7 +2,7 @@
 receiver.py
 
 TCP server for simulating two-way communication using DES-CBC for message encryption.
-The receiver waits for a sender connection at 127.0.0.1:5000.
+The receiver waits for a sender connection at 0.0.0.0:5000.
 Both parties know the shared key, which is not sent over the socket.
 """
 

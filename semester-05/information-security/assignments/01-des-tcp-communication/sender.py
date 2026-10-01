@@ -2,6 +2,7 @@
 sender.py
 
 TCP client for simulating two-way communication using DES-CBC for message encryption.
+The sender connects to the receiver at the receiver's LAN IP address.
 The sender and receiver use a pre-shared key, which is never sent over the TCP connection.
 """
 
@@ -11,7 +12,7 @@ import threading
 from des_manual import des_cbc_decrypt, des_cbc_encrypt
 
 
-HOST = "192.168.1.6"
+HOST = "192.168.1.6"    # The receiver's LAN IP address. Change this to the actual IP of the receiver.
 PORT = 5000
 
 # Educational/demo key.

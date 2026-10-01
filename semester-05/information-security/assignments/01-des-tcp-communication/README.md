@@ -71,7 +71,7 @@ This project aims to demonstrate:
 * DES-CBC mode.
 * Random 8-byte initialization vector (IV) for each message.
 * PKCS#7 padding.
-* TCP communication over `127.0.0.1`.
+* TCP communication over 0.0.0.0:5000.
 * 4-byte big-endian length-prefix message framing.
 * Independent `sender.py` and `receiver.py` processes.
 * Two-way communication.
@@ -92,7 +92,7 @@ flowchart TB
         B --> C[DES-CBC Encrypt]
         C --> D[IV + Ciphertext]
     end
-    D -->|"TCP 127.0.0.1:5000"| E
+    D -->|"TCP 0.0.0.0:5000"| E
     subgraph Receiver
         E[IV + Ciphertext] --> F[DES-CBC Decrypt]
         F --> G[Plaintext Output]
@@ -346,7 +346,7 @@ python receiver.py
 Expected output:
 
 ```text
-[receiver] Listening for a connection at 127.0.0.1:5000 ...
+[receiver] Listening for a connection at 0.0.0.0:5000 ...
 ```
 
 ### 2. Start the Sender
@@ -357,10 +357,10 @@ In the second terminal:
 python sender.py
 ```
 
-Expected output:
+Expected output (the actual IP address may vary):
 
 ```text
-[sender] Connected to 127.0.0.1:5000
+[sender] Connected to ('192.168.1.6', 5000)
 ```
 
 The Receiver should then report an established connection.
@@ -423,8 +423,7 @@ Alternatively, press `Ctrl+C`.
 
 The following screenshot shows the two independent processes communicating through TCP.
 
-![Two-way communication from Sender](docs/images/two-way-communication-2.png)
-![Two-way communication from Receiver](docs/images/two-way-communication-1.png)
+<p align="center"><img src="docs/images/two-way-communication-receiver.png" alt="Two-way communication from Receiver" width="600"></p>
 
 ---
 
@@ -465,7 +464,7 @@ Additional tests verify PKCS#7 padding and DES-CBC round-trip behavior for messa
 
 Example test output:
 
-![DES testing](docs/images/des-testing.png)
+<p align="center"><img src="docs/images/des-testing.png" alt="DES testing" width="500"></p>
 
 ---
 
