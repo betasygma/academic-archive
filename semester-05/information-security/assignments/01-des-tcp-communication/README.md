@@ -71,10 +71,10 @@ This project aims to demonstrate:
 * DES-CBC mode.
 * Random 8-byte initialization vector (IV) for each message.
 * PKCS#7 padding.
-* TCP communication over 0.0.0.0:5000.
+* TCP server listening on `0.0.0.0:5000`, with the client connecting to a configurable receiver IP.
 * 4-byte big-endian length-prefix message framing.
 * Independent `sender.py` and `receiver.py` processes.
-* Two-way communication.
+* Two-way communication over one TCP connection, with a background receive thread on each side.
 * UTF-8 text message support.
 * Standard DES known-answer testing.
 
@@ -227,9 +227,8 @@ The `recv_exact()` function ensures that the expected number of bytes is receive
 ├── test_des.py
 └── docs/
     └── images/
-        ├── two-way-communication-1.png
-        ├── two-way-communication-2.png
         ├── des-testing.png
+        ├── two-way-communication-receiver.png
         └── wireshark-capture.png
 ```
 
@@ -266,6 +265,7 @@ Implements the TCP server.
 Responsibilities:
 
 * Listen for incoming TCP connections.
+* Accept one sender connection per run.
 * Receive encrypted messages.
 * Decrypt received messages.
 * Display plaintext.
@@ -280,8 +280,7 @@ Contains automated tests for:
 * Encryption/decryption round-trip.
 * PKCS#7 padding.
 * DES-CBC round-trip.
-* Random IV generation.
-* Incorrect-key behavior.
+* Random IV generation for repeated messages.
 
 ---
 
@@ -312,18 +311,25 @@ python --version
 
 ## Configuration
 
-Both `sender.py` and `receiver.py` contain the same configuration:
+The receiver listens on all local interfaces. Set the sender's `HOST` to the
+receiver's reachable IP address. The port and shared key must be the same in
+both files:
 
 ```python
-HOST = "127.0.0.1"
+# receiver.py
+HOST = "0.0.0.0"
 PORT = 5000
 
+# sender.py
+HOST = "192.168.1.6"  # Replace with the receiver's IP address.
+PORT = 5000
+
+# Both files
 KEY = bytes.fromhex("133457799BBCDFF1")
 ```
 
-The following values must match on both sides:
+Only the port and key must match on both sides:
 
-* Host
 * Port
 * Shared key
 
@@ -357,10 +363,10 @@ In the second terminal:
 python sender.py
 ```
 
-Expected output (the actual IP address may vary):
+Expected output (the receiver IP depends on your configuration):
 
 ```text
-[sender] Connected to ('192.168.1.6', 5000)
+[sender] Connected to 192.168.1.6:5000
 ```
 
 The Receiver should then report an established connection.
@@ -388,7 +394,7 @@ The message is:
 The receiving side decrypts the payload and displays:
 
 ```text
-[plaintext] Hello Receiver
+[Plaintext] Hello Receiver
 ```
 
 The Receiver can then send a response:
@@ -472,10 +478,11 @@ Example test output:
 
 Wireshark can optionally be used to observe the TCP communication.
 
-The application communicates through:
+The application uses TCP port `5000`. Capture the receiver's network interface;
+for a same-machine test, configure `sender.py` to use `127.0.0.1`:
 
 ```text
-127.0.0.1:5000
+<receiver-ip>:5000
 ```
 
 A TCP filter can be used to focus on the application traffic:
@@ -531,17 +538,18 @@ No key exchange protocol is implemented.
 
 This satisfies the assignment requirement that both Sender and Receiver already know the key, but it is not an appropriate key-management design for a real-world system.
 
-### Localhost only
+### Network binding
 
-The current configuration uses:
+The receiver binds to all local interfaces:
 
 ```text
-127.0.0.1
+0.0.0.0:5000
 ```
 
-Therefore, communication occurs between processes on the same machine.
-
-This is a logical simulation of two communicating endpoints.
+The sender connects to the IP configured in `sender.py` (currently
+`192.168.1.6`). Set it to `127.0.0.1` when both processes run on the same
+machine. Since the server listens on every interface, firewall rules affect
+which peers can connect.
 
 ---
 
@@ -550,7 +558,8 @@ This is a logical simulation of two communicating endpoints.
 The project intentionally has several limitations:
 
 * DES is used because it is required by the assignment.
-* Communication is limited to localhost.
+* The sender's receiver IP is configured manually.
+* The server accepts one sender connection per run.
 * The shared key is manually configured.
 * No key exchange protocol is implemented.
 * No message authentication is implemented.
