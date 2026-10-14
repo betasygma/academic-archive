@@ -275,6 +275,7 @@ const HORIZON = 0.4;
 const APEX = pt(0.443, 0.4);
 const ROAD_LEFT = pt(0.63, 1.0);
 const ROAD_RIGHT = pt(0.77, 1.0);
+const dx = 0.1;
 
 // Jalan sebagai segitiga perspektif.
 MESH.road = createMesh([
@@ -286,37 +287,37 @@ MESH.road = createMesh([
 // Rumah: sisi kiri, atap sisi, dan tiga jendela sisi.
 const HOUSE = {
   sideWall: createPolygon([
-    [0.21, 0.692],
-    [0.347, 0.716],
-    [0.348, 0.836],
-    [0.210, 0.805]
+    [0.21 - dx, 0.692],
+    [0.347 - dx, 0.716],
+    [0.348 - dx, 0.836],
+    [0.210 - dx, 0.805]
   ]),
 
   roofSide: createPolygon([
-    [0.266, 0.553],
-    [0.408, 0.562],
-    [0.344, 0.716],
-    [0.204, 0.690]
+    [0.266 - dx, 0.553],
+    [0.408 - dx, 0.562],
+    [0.344 - dx, 0.716],
+    [0.204 - dx, 0.690]
   ]),
 
   sideWindows: [
     createPolygon([
-      [0.23, 0.725],
-      [0.254, 0.727],
-      [0.254, 0.780],
-      [0.233, 0.777]
+      [0.23 - dx, 0.725],
+      [0.254 - dx, 0.727],
+      [0.254 - dx, 0.780],
+      [0.233 - dx, 0.777]
     ]),
     createPolygon([
-      [0.265, 0.729],
-      [0.290, 0.732],
-      [0.290, 0.786],
-      [0.265, 0.783]
+      [0.265 - dx, 0.729],
+      [0.290 - dx, 0.732],
+      [0.290 - dx, 0.786],
+      [0.265 - dx, 0.783]
     ]),
     createPolygon([
-      [0.302, 0.733],
-      [0.327, 0.737],
-      [0.327, 0.792],
-      [0.302, 0.788]
+      [0.302 - dx, 0.733],
+      [0.327 - dx, 0.737],
+      [0.327 - dx, 0.792],
+      [0.302 - dx, 0.788]
     ])
   ]
 };
@@ -421,13 +422,15 @@ const FLAP_HZ = 2.2;
 
 const BIRDS = [
   { end: pt(0.81, 0.10), waves: 2.0 },
-  { end: pt(0.90, 0.21), waves: 1.5 }
+  { end: pt(0.90, 0.21), waves: 1.5 },
+  { end: pt(0.81, 0.10), waves: 2.0, mirrorX: true },
+  { end: pt(0.90, 0.21), waves: 1.5, mirrorX: true },
 ];
 
 // -------------------------
 // Pohon
 // -------------------------
-const CANOPY_CENTER = pt(0.138, 0.589);
+const CANOPY_CENTER = pt(0.438, 0.589);
 const CANOPY_CORE_RADIUS = 0.072;
 const CANOPY_BLOBS = [];
 
@@ -446,7 +449,7 @@ for (let i = 0; i < 9; i++) {
 function mulberry32(seed) {
   return function () {
     seed |= 0;
-    seed = (seed + 0x6d2b79f4) | 0;
+    seed = (seed + 0x6d2b79f) | 0;
     let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -617,6 +620,7 @@ function drawSun(t) {
 // Burung: badan sebagai parent, dua sayap sebagai child.
 function drawBird(bird, t) {
   const localTime = t % CYCLE_TIME;
+  const mirror = bird.mirrorX ? - 1 : 1;
 
   let progress;
   let direction;
@@ -663,13 +667,13 @@ function drawBird(bird, t) {
 
   const tilt =
     direction *
-    (BIRD_TILT + wobble);
+    (BIRD_TILT + wobble) * mirror;
 
   const body = compose(
     VIEW,
-    T(x, y),
+    T(bird.mirrorX ? ASPECT - x : x, y),
     R(tilt),
-    S(direction, 1)
+    S(direction * mirror, 1)
   );
 
   // Kepakan dua sayap secara berlawanan.
@@ -752,7 +756,7 @@ function drawTree(t) {
   }
 
   // Batang digambar di depan daun, sesuai referensi.
-  const [tx, ty] = pt(0.13, 0.72);
+  const [tx, ty] = pt(0.43, 0.72);
 
   draw(
     MESH.trunk,
@@ -769,10 +773,10 @@ function drawTree(t) {
 function drawHouse() {
   // Dinding samping lebih dahulu.
   drawPolygon(HOUSE.sideWall, COLOR.wall);
-
+  const dx = 0.1;
   // Dinding depan.
   drawRect(
-    0.405,
+    0.405 - dx,
     0.776,
     0.112,
     0.12,
@@ -782,7 +786,7 @@ function drawHouse() {
   // Atap samping lalu atap depan.
   drawPolygon(HOUSE.roofSide, COLOR.roof);
 
-  const [rx, ry] = pt(0.41, 0.6395);
+  const [rx, ry] = pt(0.41 - dx, 0.6395);
 
   draw(
     MESH.triangle,
@@ -801,7 +805,7 @@ function drawHouse() {
 
   // Jendela depan di kiri, pintu di kanan, mengikuti referensi.
   drawRect(
-    0.3815,
+    0.3815 - dx,
     0.777,
     0.033,
     0.07,
@@ -809,7 +813,7 @@ function drawHouse() {
   );
 
   drawRect(
-    0.4275,
+    0.4275 - dx,
     0.7885,
     0.031,
     0.093,
