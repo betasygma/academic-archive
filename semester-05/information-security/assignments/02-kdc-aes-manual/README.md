@@ -1,4 +1,4 @@
-# KI KDC AES Manual
+# KDC AES Manual
 
 Manual AES-128 (CBC) with a five-step KDC key distribution protocol and two-way TCP communication between three entities: **KDC**, **Alice**, and **Bob**.
 
