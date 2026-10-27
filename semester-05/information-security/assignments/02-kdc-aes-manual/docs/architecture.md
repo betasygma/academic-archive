@@ -1,6 +1,6 @@
 # Architecture
 
-Status: **Stage A design**. All components (`aes.py`, `common.py`, `kdc.py`, `alice.py`, `bob.py`) have been implemented. Three-device testing and Wireshark testing (Stage E) are not implemented yet.
+Status: **Design baseline; Stage E validation pending**. All components (`aes.py`, `common.py`, `kdc.py`, `alice.py`, `bob.py`) have been implemented and Stage D passed on localhost. Three-device network testing and Wireshark analysis have not yet been run.
 
 ## Goal
 
@@ -21,7 +21,7 @@ The system has three entities on three different IP addresses. The KDC distribut
 | Long-term keys | `K_A` and `K_B` are stored in local config files, not in the source code or Git |
 | Libraries | `secrets`, `socket`, `json`, and `threading` are allowed. AES and the KDC protocol are implemented manually. |
 
-## Network Topology (Planned)
+## Network Topology (Stage E Target; Not Yet Validated)
 
 ```mermaid
 sequenceDiagram
@@ -44,7 +44,15 @@ sequenceDiagram
 - Alice opens two TCP connections: one to the KDC for steps 1–2, which is then closed, and another to Bob for steps 3–5 and subsequent data communication.
 - Bob never connects to the KDC directly.
 - Device setup: Bob runs on a phone using Termux. The laptop provides the Wi-Fi hotspot, not the phone.
-- The final IP addresses and port numbers will be decided in Stage E.
+- Use the actual private LAN IP addresses assigned to the KDC laptop and Bob
+  phone in Alice's config. The values in the example configs are illustrative,
+  not assigned addresses.
+- The target ports are TCP 5000 for the KDC and TCP 5001 for Bob. Both
+  listeners bind to `0.0.0.0`; allow inbound traffic only on the trusted local
+  network when the host firewall requires a rule.
+- Before testing, verify the hotspot permits communication between clients.
+  The three-device topology remains unverified until the manual Stage E test
+  passes. See [`stage-e-guide.md`](stage-e-guide.md) for the ordered procedure.
 
 ## Key Ownership
 
