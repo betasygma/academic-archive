@@ -29,16 +29,19 @@ sequenceDiagram
     participant Alice as Laptop 2 (Alice)
     participant Bob as Phone / Termux (Bob)<br/>IP_BOB:5001
 
-    Alice->>KDC: (1) REQ
-    KDC-->>Alice: (2) RESP
-    Note over Alice,KDC: Alice closes the KDC connection
+    rect rgba(100, 150, 255, 0.15)
+        Alice->>KDC: (1) REQ
+        KDC-->>Alice: (2) RESP
+        Note over Alice,KDC: Alice closes the KDC connection
+        Alice->>Bob: (3) TICKET
+    end
 
-    Alice->>Bob: (3) TICKET
-    Bob->>Alice: (4) CHALLENGE
-    Alice->>Bob: (5) RESPONSE
-
-    Note over Alice,Bob: Session established
-    Alice<<->>Bob: DATA (AES-128-CBC)
+    rect rgba(255, 170, 80, 0.15)
+        Bob-->>Alice: (4) CHALLENGE
+        Alice->>Bob: (5) RESPONSE
+        Note over Alice,Bob: Session established
+        Alice<<->>Bob: DATA (AES-128-CBC)
+    end
 ```
 
 - Alice opens two TCP connections: one to the KDC for steps 1–2, which is then closed, and another to Bob for steps 3–5 and subsequent data communication.

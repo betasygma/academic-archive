@@ -29,11 +29,22 @@ Bob—and supports bidirectional TCP messaging after authentication.
 - [References](#references)
 
 ```mermaid
-flowchart LR
-    A[Alice] -->|Steps 1-2: request session key| K[KDC]
-    K -->|Encrypted response and Bob ticket| A
-    A -->|Steps 3-5: ticket and challenge-response| B[Bob]
-    A <-->|AES-CBC messages after authentication| B
+sequenceDiagram
+    participant A as Alice
+    participant K as KDC
+    participant B as Bob
+
+    rect rgba(100, 150, 255, 0.15)
+        A->>K: Steps 1: REQ
+        K-->>A: Steps 2: RESP
+        A->>B: Steps 3: Ticket
+    end
+
+    rect rgba(255, 170, 80, 0.15)
+        B-->>A: Steps 4: Challenge
+        A->>B: Steps 5: Response
+        A<<->>B: Bidirectional AES-CBC data after authentication
+    end
 ```
 
 Detailed messages and verification are shown in the [protocol sequence](docs/protocol-flow.md#protocol-flow-5-steps).
