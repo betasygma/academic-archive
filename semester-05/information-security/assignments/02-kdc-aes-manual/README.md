@@ -15,7 +15,7 @@ Manual AES-128 (CBC) with a five-step KDC key distribution protocol and two-way 
 | A | Architecture, protocol, message format (`docs/`) | Done |
 | B | `aes.py` (AES-128, CBC, PKCS#7) and `tests/test_aes.py` | Done. 16/16 tests pass in the reference run ([results](docs/test-results.md)); re-verify on the target devices |
 | C | `common.py`, `kdc.py`, config format, protocol and KDC tests | Done. 58 tests (whole suite) pass in the reference run; localhost only |
-| D | `alice.py`, `bob.py`, two-way messaging | Not started |
+| D | `alice.py`, `bob.py`, two-way messaging | Done. 82 tests (whole suite) pass in the reference run; localhost only |
 | E | Three-device test, Wireshark analysis, demo guide | Not started |
 
 ## Architecture
@@ -122,15 +122,15 @@ Every step is logged with its direction, logical content, hex ciphertext, and ve
 
 ```text
 02-kdc-aes-manual/
-├── aes.py                  # done
-├── common.py               # done
-├── kdc.py                  # done
-├── alice.py                # done
-├── bob.py                  # done
+├── aes.py                  # done (stage B)
+├── common.py               # done (stage C)
+├── kdc.py                  # done (stage C)
+├── alice.py                # done (stage D)
+├── bob.py                  # done (stage D)
 ├── config/                 # *.example.json only; real keys are git-ignored
 ├── tests/
-│   ├── test_aes.py         # done
-│   ├── test_protocol.py    # done
+│   ├── test_aes.py         # done (stage B)
+│   ├── test_protocol.py    # done (stage C)
 │   └── test_network.py     # KDC and end-to-end flow over localhost
 ├── docs/
 │   ├── architecture.md
