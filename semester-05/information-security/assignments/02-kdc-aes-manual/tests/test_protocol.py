@@ -117,6 +117,65 @@ class TestKDCResponse(unittest.TestCase):
                 common.kdc_handle_request(req, KEYS)
 
 
+class TestChallengeResponseAndData(unittest.TestCase):
+    KS = "Qw3rty!uiop&Asdf"
+
+    def test_challenge_response_roundtrip(self):                  # test 4
+        n2, chal = common.make_challenge(self.KS)
+        n2_alice, resp = common.answer_challenge(chal, self.KS)
+        self.assertEqual(n2_alice, n2)
+        self.assertEqual(common.verify_response(resp, self.KS, n2), common.f_nonce(n2))
+
+    def test_challenge_is_fresh_each_time(self):
+        a = common.make_challenge(self.KS)
+        b = common.make_challenge(self.KS)
+        self.assertNotEqual(a[0], b[0])
+        self.assertNotEqual(a[1]["data"], b[1]["data"])
+
+    def test_wrong_answers_rejected(self):                        # test 8
+        n2, chal = common.make_challenge(self.KS)
+        reflected = {"type": "RESPONSE", "data": chal["data"]}    # reflection attack: send E(K_S, N2) back as the response
+        wrong_f = {"type": "RESPONSE", "data": aes.encrypt_text(self.KS, str(int(n2) + 2))}
+        not_num = {"type": "RESPONSE", "data": aes.encrypt_text(self.KS, "abc")}
+        wrong_key = {"type": "RESPONSE", "data": aes.encrypt_text("Other-Key-12345!", common.f_nonce(n2))}
+        for bad in (reflected, wrong_f, not_num, wrong_key):
+            with self.assertRaises(AuthError):
+                common.verify_response(bad, self.KS, n2)
+
+    def test_response_for_other_challenge_rejected(self):         # a response from another session must not be accepted
+        n2a, chal_a = common.make_challenge(self.KS)
+        n2b, _ = common.make_challenge(self.KS)
+        _, resp_a = common.answer_challenge(chal_a, self.KS)
+        with self.assertRaises(AuthError):
+            common.verify_response(resp_a, self.KS, n2b)
+
+    def test_challenge_with_wrong_session_key_rejected(self):
+        _, chal = common.make_challenge(self.KS)
+        with self.assertRaises(AuthError):
+            common.answer_challenge(chal, "Other-Key-12345!")
+
+    def test_data_roundtrip_all_lengths(self):                    # test 5, 6, 10
+        for n in list(range(0, 50)) + [200]:
+            text = "".join(chr(32 + (i * 7) % 95) for i in range(n))
+            msg = common.data_message(self.KS, text)
+            self.assertEqual(msg["type"], "DATA")
+            self.assertEqual(common.read_data(msg, self.KS), text)
+
+    def test_data_non_ascii_rejected_before_send(self):           # test 10
+        for text in ("caf\u00e9", "\u4f60\u597d", "emoji \U0001F600"):
+            with self.assertRaises(ProtocolError):
+                common.data_message(self.KS, text)
+
+    def test_data_tampered_or_wrong_key_rejected(self):           # test 7
+        msg = common.data_message(self.KS, "secret")
+        raw = bytearray(bytes.fromhex(msg["data"]))
+        raw[-1] ^= 0x01
+        with self.assertRaises(AuthError):
+            common.read_data({"type": "DATA", "data": bytes(raw).hex()}, self.KS)
+        with self.assertRaises(AuthError):
+            common.read_data(msg, "Other-Key-12345!")
+
+
 class TestValidation(unittest.TestCase):
     def test_ids(self):
         for ok in ("alice", "Bob_2", "a" * 32):

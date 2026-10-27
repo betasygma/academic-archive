@@ -71,7 +71,7 @@ class TestCBC(unittest.TestCase):
         self.assertNotEqual(a, b)
 
     def test_wrong_key_fails_fixed_iv(self):
-        ct = aes.encrypt_cbc(self.KEY, b"pesan rahasia 123", self.IV)
+        ct = aes.encrypt_cbc(self.KEY, b"secret message 123", self.IV)
         with self.assertRaises(AESError):
             aes.decrypt_cbc(b"X" * 16, ct)
 
@@ -81,34 +81,34 @@ class TestCBC(unittest.TestCase):
         with self.assertRaises(AESError):
             aes.decrypt_cbc(self.KEY, bytes(ct))
         with self.assertRaises(AESError):
-            aes.decrypt_cbc(self.KEY, bytes(ct[:-3]))      # bukan kelipatan blok
+            aes.decrypt_cbc(self.KEY, bytes(ct[:-3]))      # truncated ciphertext
         with self.assertRaises(AESError):
-            aes.decrypt_cbc(self.KEY, self.IV)             # tanpa blok data
+            aes.decrypt_cbc(self.KEY, self.IV)             # truncated ciphertext, only IV
 
 
 class TestTextAPI(unittest.TestCase):
-    KEY = "kunci-rahasia-16"
+    KEY = "secret-key-is-16"
 
     def test_roundtrip_and_hex(self):
-        c = aes.encrypt_text(self.KEY, "Halo Bob!")
+        c = aes.encrypt_text(self.KEY, "Hello Bob!")
         int(c, 16)
-        self.assertEqual(aes.decrypt_text(self.KEY, c), "Halo Bob!")
+        self.assertEqual(aes.decrypt_text(self.KEY, c), "Hello Bob!")
 
     def test_empty_message(self):
         c = aes.encrypt_text(self.KEY, "")
-        self.assertEqual(len(c), 64)          # IV 16 B + 1 blok padding = 32 B = 64 hex
+        self.assertEqual(len(c), 64)          # IV 16 B + 1 padding block = 32 B = 64 hex
         self.assertEqual(aes.decrypt_text(self.KEY, c), "")
 
     def test_key_length_validated(self):
-        for bad in ("", "pendek", "x" * 15, "x" * 17, "x" * 32):
+        for bad in ("", "short", "x" * 15, "x" * 17, "x" * 32):
             with self.assertRaises(AESError):
                 aes.encrypt_text(bad, "a")
 
     def test_non_ascii_rejected(self):
-        with self.assertRaises(AESError):
+        with self.assertRaisesRegex(AESError, "non-ASCII"):
             aes.encrypt_text(self.KEY, "caf\u00e9")
-        with self.assertRaises(AESError):
-            aes.encrypt_text("kunci-rahasia-\u00e9\u00e9", "a")
+        with self.assertRaisesRegex(AESError, "non-ASCII"):
+            aes.encrypt_text("secret-key-is-\u00e9\u00e9", "a")
 
     def test_bad_hex_rejected(self):
         with self.assertRaises(AESError):
