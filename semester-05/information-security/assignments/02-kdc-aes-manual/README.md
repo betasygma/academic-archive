@@ -17,7 +17,7 @@ Bob—and supports bidirectional TCP messaging after authentication.
 
 ## Contents
 
-- [Assignment Status](#assignment-status)
+- [Status](#status)
 - [Features](#features)
 - [Additional Features](#additional-features)
 - [Protocol Overview](#protocol-overview)
@@ -47,21 +47,20 @@ sequenceDiagram
     end
 ```
 
-Detailed messages and verification are shown in the [protocol sequence](docs/protocol-flow.md#protocol-flow-5-steps).
+## Status
 
-## Assignment Status
+| Stage | Scope | Status |
+|---|---|---|
+| A | Architecture, protocol, and message format | Complete |
+| B | Manual AES-128-CBC and AES test vectors | Complete; 16 tests recorded |
+| C | Shared protocol utilities, configuration, KDC, and protocol/network tests | Complete; 58 tests recorded, localhost only |
+| D | Alice/Bob clients and bidirectional communication | Complete; 82 tests recorded, localhost only |
+| E | Three-device test, Wireshark analysis, and demo guide | Guide prepared; three-device test and Wireshark analysis not run |
 
-| Area | Status |
-|---|---|
-| Manual AES-128-CBC implementation and test vectors | Complete |
-| KDC protocol, Alice/Bob clients, and localhost bidirectional tests | Complete; 82 automated tests recorded |
-| Three-device test and Wireshark analysis | Not run; results are not claimed |
-
-The assignment requires manual AES and KDC implementations, ASCII keys and
-plaintext, hexadecimal ciphertext, changeable non-hardcoded keys, three
-distinct device IP addresses, and two-way communication after step 5. The
-current automated networking results use localhost; they do not prove the
-three-device requirement. The original task brief is retained in
+Stage D's automated and manual networking results use localhost and do not
+verify communication across three distinct device IP addresses. Stage E
+results are pending; see [Test Results](docs/test-results.md) and the
+[Stage E guide](docs/stage-e-guide.md). The original assignment brief is in 
 [`docs/assignment-detail.md`](docs/assignment-detail.md).
 
 ## Features
