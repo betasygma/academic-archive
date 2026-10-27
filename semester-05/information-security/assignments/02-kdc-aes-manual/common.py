@@ -5,7 +5,10 @@ The cryptographic primitives (AES) are implemented in aes.py. This module builds
 import json
 import re
 import secrets
+import socket
 import string
+import threading
+from datetime import datetime
 
 import aes
 from aes import AESError
@@ -161,9 +164,14 @@ class LineChannel:
 
     def close(self):
         try:
+            self.sock.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            pass
+        try:
             self.sock.close()
         except OSError:
             pass
+
 
 
 # ---------------------------------------------------------------- protocol helpers for Stages 1-3
@@ -340,3 +348,62 @@ def load_config(path, role):
     except (OSError, ValueError) as e:
         raise ConfigError(f"Unable to read config: {e}")
     return _PARSERS[role](raw)
+
+# ---------------------------------------------------------------- Stage D: stages 4-5, data, logging
+TIMEOUT = 10                                # seconds per handshake step
+GENERIC_AUTH_ERROR = "authentication failed"  # the only reason sent over the network for cryptographic failures
+_print_lock = threading.Lock()
+
+
+def log(line):
+    with _print_lock:
+        print(f"[{datetime.now():%H:%M:%S}] {line}", flush=True)
+
+
+def mask_secret(text, secret, enabled):
+    return text.replace(secret, "*" * len(secret)) if enabled else text
+
+
+def check_key(key):
+    """Validate a new long-term key (16 ASCII characters, not a placeholder). Raise ConfigError."""
+    return _cfg_key(key, "key")
+
+
+def _decrypt_field(ks, msg, what):
+    check_cipher_hex(msg["data"], what)
+    try:
+        return aes.decrypt_text(ks, msg["data"])
+    except AESError as e:
+        raise AuthError(f"Cannot decrypt {what} ({e})")
+
+
+def make_challenge(ks):
+    """Stage 4 (Bob's side): generate a new N2 and send it as E(K_S, N2). Returns (N2, CHALLENGE message)."""
+    n2 = new_nonce()
+    return n2, {"type": "CHALLENGE", "data": aes.encrypt_text(ks, n2)}
+
+
+def answer_challenge(msg, ks):
+    """Stages 4->5 (Alice's side): decrypt N2 and reply with E(K_S, f(N2)). Returns (N2, RESPONSE message)."""
+    n2 = _decrypt_field(ks, msg, "challenge")
+    return n2, {"type": "RESPONSE", "data": aes.encrypt_text(ks, f_nonce(n2))}
+
+
+def verify_response(msg, ks, n2):
+    """Stage 5 (Bob's side): the decrypted result must exactly match f(N2). Returns the received value."""
+    got = _decrypt_field(ks, msg, "response")
+    if not secrets.compare_digest(got.encode("ascii", "replace"), f_nonce(n2).encode("ascii")):
+        raise AuthError("f(N2) does not match")
+    return got
+
+
+def data_message(ks, text):
+    """Application message: E(K_S, ASCII plaintext). Non-ASCII text is rejected before sending."""
+    try:
+        return {"type": "DATA", "data": aes.encrypt_text(ks, text)}
+    except AESError as e:
+        raise ProtocolError(str(e))
+
+
+def read_data(msg, ks):
+    return _decrypt_field(ks, msg, "message")
