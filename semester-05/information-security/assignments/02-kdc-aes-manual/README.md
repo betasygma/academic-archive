@@ -36,6 +36,27 @@ flowchart LR
 
 `E(K,X)` is AES-128-CBC encryption, `‖` is concatenation.
 
+```mermaid
+sequenceDiagram
+    autonumber
+    participant A as Alice (Initiator)
+    participant KDC as KDC
+    participant B as Bob (Responder)
+
+    rect rgba(100, 150, 255, 0.15)
+    Note over A,B: Key distribution (steps 1-3)
+    A->>KDC: ID_A ‖ ID_B ‖ N1
+    KDC->>A: E(K_A,[K_S ‖ ID_A ‖ ID_B ‖ N1]) ‖ E(K_B,[K_S ‖ ID_A])
+    A->>B: E(K_B,[K_S ‖ ID_A])
+    end
+
+    rect rgba(255, 170, 80, 0.15)
+    Note over A,B: Authentication (steps 4-5)
+    B->>A: E(K_S,N2)
+    A->>B: E(K_S,f(N2))
+    end
+```
+
 | # | Direction | Content |
 |---|---|---|
 | 1 | A → KDC | `ID_A ‖ ID_B ‖ N1` (plaintext) |
