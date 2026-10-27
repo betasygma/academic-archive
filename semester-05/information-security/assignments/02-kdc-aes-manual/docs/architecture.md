@@ -17,7 +17,7 @@ The system has three entities on three different IP addresses. The KDC distribut
 | Transport | TCP, with one persistent Alice–Bob connection |
 | Nonce | Random 64-bit integer (`secrets.randbits(64)`), sent as decimal ASCII |
 | `f(N2)` | `N2 + 1 (mod 2^64)` |
-| `K_S` | 16 ASCII characters selected from 94 printable characters, excluding the backtick character (`) |
+| `K_S` | 16 ASCII characters selected from 93 printable characters, excluding the backtick character (`) |
 | Long-term keys | `K_A` and `K_B` are stored in local config files, not in the source code or Git |
 | Libraries | `secrets`, `socket`, `json`, and `threading` are allowed. AES and the KDC protocol are implemented manually. |
 
@@ -74,8 +74,20 @@ sequenceDiagram
 
 2. **No MAC:** CBC does not provide data integrity. An attacker could modify the ciphertext using a bit-flipping attack. Such modifications may be detected through padding checks and field validation, but these checks do not guarantee integrity. Adding a MAC is a separate topic and does not change the 5-step protocol.
 
-3. **Session key entropy:** `K_S` has approximately 105 bits of entropy (`94^16` possible combinations), rather than the full 128 bits, because the key must use ASCII characters.
+3. **Session key entropy:** `K_S` has approximately 105 bits of entropy (`93^16` possible combinations), rather than the full 128 bits, because the key must use ASCII characters.
 
 4. **AES is not constant-time:** The implementation is not protected against side-channel attacks. It is intended for learning purposes only.
 
 5. **Limited network confidentiality:** Some information remains visible in Wireshark, including IDs, the step 1 nonce, IP addresses, and JSON metadata.
+
+## Configuration (Stage C)
+
+The local file `config/<role>.json` is created by copying `config/<role>.example.json`. Local files are excluded from Git. Fields prefixed with `_` (e.g., `_comment`) are ignored; other unknown fields are rejected to detect typos.
+
+| Role | Fields (required *) | Defaults |
+|---|---|---|
+| `kdc` | `keys`* = `{id: key}` with at least 2 identities; `host`; `port` | host `0.0.0.0`, port `5000` |
+| `alice` | `id`*, `key`* (= K_A), `kdc`* = `{host*, port}`, `peer`* = `{id*, host*, port}` | kdc.port `5000`, peer.port `5001` |
+| `bob` | `id`*, `key`* (= K_B), `host`; `port` | host `0.0.0.0`, port `5001` |
+
+**Rules:** Keys must be exactly 16 ASCII characters; each identity in the KDC must have a unique key; values beginning with `CHANGE_ME` are rejected; IDs must match `[A-Za-z0-9_]` and be 1–32 characters long; error messages must not contain key values. Host values in the example files are illustrative only.

@@ -1,6 +1,6 @@
 # Protocol Flow (5 Steps)
 
-Status: Stage A design. Network implementation is not available yet.
+**Status**: Steps 1–2 (KDC) and the helper functions for Steps 1–3 have been implemented (`common.py`, `kdc.py`). Network implementation of Steps 3–5 (Alice and Bob) is not yet available.
 
 Notation: `ID_A`, `ID_B` = identities; `N1`, `N2` = nonces; `K_A`, `K_B` = long-term keys; `K_S` = session key; `E(K,X)` = AES-128-CBC encryption, output as Hex `IV ‖ C`; `f(N2) = N2 + 1`.
 
@@ -18,7 +18,18 @@ After Step 5 succeeds, Alice and Bob can communicate in both directions using `E
 
 Fields are joined with `|` before encryption. For example: `K_S|ID_A|ID_B|N1`.
 
-- IDs only contain characters from `[A-Za-z0-9_]`; nonces contain digits only; and `K_S` does not contain `|`. This makes parsing unambiguous.
+- IDs only contain characters from `[A-Za-z0-9_]` and must be 1-32 characters long. 
+- Nonces contain ASCII digits only, with a maximum of 20 digits and a value less than \(2^{64}\).
+- `K_S` does not contain `|`.
+
+These constraints make parsing unambiguous.
+
+## KDC Rules (Implemented)
+
+- `ID_A` and `ID_B` must be registered and distinct. Invalid IDs or `N1` values are rejected with an ERROR response.
+- `K_S` is generated using `secrets.choice` from an alphabet of 93 symbols and must not match any long-term key.
+- Each message is limited to 64 KiB.
+- Each KDC connection handles one `REQ` message and is then closed.
 
 ## Wire Format
 
