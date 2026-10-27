@@ -2,8 +2,8 @@
 
 Manual AES-128 (CBC) with a five-step KDC key distribution protocol and two-way TCP communication between three entities: **KDC**, **Alice**, and **Bob**.
 
-**Course:** Information Security (Keamanan Informasi) · Assignment 2  
-**Author:** Bara S. Rohmani (SID 5025241144)
+**Course:** Information Security (Keamanan Informasi) · Assignment 2<br>
+**Author:** Bara S. Rohmani (SID 5025241144)<br>
 **Institution:** Department of Informatics Engineering, ITS Surabaya, Indonesia
 
 > Educational project, not for production use. See [Limitations](#limitations).
