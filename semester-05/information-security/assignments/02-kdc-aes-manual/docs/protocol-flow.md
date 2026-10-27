@@ -1,6 +1,6 @@
 # Protocol Flow (5 Steps)
 
-**Status**: Steps 1–2 (KDC) and the helper functions for Steps 1–3 have been implemented (`common.py`, `kdc.py`). Network implementation of Steps 3–5 (Alice and Bob) is not yet available.
+**Status**: All five steps and bidirectional communication have been implemented (`common.py`, `kdc.py`, `alice.py`, `bob.py`). Tested on localhost, but not yet across three separate devices.
 
 Notation: `ID_A`, `ID_B` = identities; `N1`, `N2` = nonces; `K_A`, `K_B` = long-term keys; `K_S` = session key; `E(K,X)` = AES-128-CBC encryption, output as Hex `IV ‖ C`; `f(N2) = N2 + 1`.
 
@@ -19,7 +19,7 @@ After Step 5 succeeds, Alice and Bob can communicate in both directions using `E
 Fields are joined with `|` before encryption. For example: `K_S|ID_A|ID_B|N1`.
 
 - IDs only contain characters from `[A-Za-z0-9_]` and must be 1-32 characters long. 
-- Nonces contain ASCII digits only, with a maximum of 20 digits and a value less than \(2^{64}\).
+- Nonces only contain ASCII digits, with a maximum of 20 digits and a value less than 2<sup>64</sup>.
 - `K_S` does not contain `|`.
 
 These constraints make parsing unambiguous.
@@ -52,3 +52,11 @@ Decrypting with the wrong key or using corrupted data raises `AESError` if the p
 If the padding happens to be valid by chance (approximately 1 in 256), field validation, such as checking the ID or nonce, can still reject the data.
 
 If a nonce does not match, authentication fails and the connection is closed.
+
+## Rules for Steps 3–5 and Data (Implemented)
+
+- Bob rejects the first message if it is not `TICKET`, and rejects the second message if it is not `RESPONSE`. In either case, the connection is closed.
+- `N2`: A new 64-bit nonce is generated for each connection. The only valid response is `E(K_S, N2+1 mod 2^64)`. `E(K_S,N2)` (reflection), `N2+2`, non-numeric text, or encryption with a different key is rejected.
+- Cryptographic failures receive the following response over the network: `{"type":"ERROR","reason":"authentication failed"}`. Further details are recorded only in local logs.
+- `DATA`: The plaintext must be ASCII; empty plaintext is allowed. Messages use `E(K_S, text)` with a new random IV for each message and hexadecimal encoding. Non-ASCII text is rejected before sending. If a `DATA` message fails to decrypt, the failure is logged and the message is ignored; the session remains active.
+- Bob does not send a confirmation for Step 5. See the design decisions in [`architecture.md`](architecture.md).

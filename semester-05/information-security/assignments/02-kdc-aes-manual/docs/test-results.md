@@ -12,7 +12,8 @@ python -m unittest discover -s tests -v
 
 | Environment | Date | Result |
 |---|---|---|
-| User's laptop (Windows, Python 3.12) | 2026-10-27 | 16 tests passed in ~0.17 seconds |
+| Sandbox Claude (Python 3.12.3) | 2026-10-27 | 16 tests passed (run multiple times, stable) |
+| User's laptop (Windows, Python 3.12) | 2026-10-27 | 16 tests passed (run multiple times, ~0.17 seconds) |
 | Phone (Termux) | ... | ... |
 
 ### Test Coverage (16 Tests)
@@ -35,11 +36,42 @@ python -m unittest discover -s tests -v
 
 | Environment | Date | Result |
 |---|---|---|
-| User's laptop (Windows, Python 3.14.3) | 2026-10-27 | 57 tests passed in ~6.3 seconds (5 consecutive runs) |
+| Sandbox Claude (Python 3.12) | 2026-10-27 | 58 tests passed (5 consecutive runs, stable) |
+| User's laptop (Windows, Python 3.14.3) | 2026-10-27 | 58 tests passed (30 consecutive runs, ~6.3 seconds ) |
 | Phone (Termux) | ... | ... |
 
 **Coverage:** `K_S` distribution and `N1` verification; ticket decryption using `K_B`; rejection of incorrect keys, corrupted tickets, truncated tickets, and non-hexadecimal data; prevention of old responses being used for new requests; rejection of unregistered IDs and cases where `ID_A = ID_B`; message framing (fragmented messages, multiple messages in one send, EOF, malformed JSON, and oversized messages); configuration validation and example configuration files; KDC over TCP on `127.0.0.1` (errors do not terminate the server, 12 concurrent requests, runtime key changes, and ensuring `K_S` does not appear in logs when `--mask-secrets` is enabled).
 
-## Stages D–E: Alice/Bob, Three Devices, and Wireshark
+**Notes**: Network tests were performed only on `127.0.0.1`, **not across three different IP addresses**. The KDC interactive console (`ids`, `setkey`, `reload`, `quit`) was manually tested.
 
-**Status: Not tested yet.**
+## Stage D: Alice, Bob, and the Full Protocol Flow (`tests/test_protocol.py`, `tests/test_network.py`)
+
+Command: `python -m unittest discover -s tests -v` (full test suite)
+
+| Environment | Date | Result |
+|---|---|---|
+| Claude Sandbox, Python 3.12 | 2026-10-27 | 82 tests passed (6 consecutive runs, ~5 seconds) |
+| User's laptop | 2026-10-27 | 82 tests passed (5 consecutive runs, ~14.75 seconds) |
+| Phone (Termux) | ... | ... |
+
+Mapping to the 12 required tests (all run on localhost, not across three different IP addresses):
+
+| # | Required Test | Automated Test |
+|---|---|---|
+| 1 | KDC distributes `K_S` | `test_full_stage_1_2_over_tcp` |
+| 2 | Alice verifies `N1` | `test_n1_mismatch_rejected`, `test_old_response_cannot_answer_new_request` |
+| 3 | Bob decrypts the ticket using `K_B` | `test_bob_opens_ticket_with_kb` |
+| 4 | Challenge-response, Steps 4–5 | `test_challenge_response_roundtrip`, `test_full_five_stages_then_two_way_chat` |
+| 5, 6 | Alice-to-Bob and Bob-to-Alice communication | `test_full_five_stages_then_two_way_chat` |
+| 7 | Wrong key / corrupted ticket | `test_alice_with_wrong_ka_fails_at_stage_2`, `test_bob_with_wrong_kb_rejects_ticket_without_leaking_detail`, `test_corrupted_ticket_rejected`, `test_data_tampered_or_wrong_key_rejected` |
+| 8 | Incorrect nonce | `test_wrong_answers_rejected`, `test_wrong_nonce_answer_fails_authentication` (reflection, `N2+2`, non-numeric input) |
+| 9 | Change keys without restarting | `test_change_keys_without_restart`, `test_key_change_at_runtime` |
+| 10 | Empty messages, different lengths, and non-ASCII text | `test_various_message_lengths_empty_and_non_ascii`, `test_data_roundtrip_all_lengths` |
+| 11 | Reject communication before Step 5 | `test_cannot_send_before_authentication`, `test_bob_rejects_data_before_ticket_and_before_response` |
+| 12 | Wireshark across devices | **Manual test, Stage E, not yet run** |
+
+Manual testing in the terminal using three CLI processes (KDC, Bob, and Alice) on `127.0.0.1`. This covered bidirectional messaging, `/rekey`, `/status`, rejection of a short key through `/setkey`, rejection of non-ASCII messages, and sending messages that start with `/` using `/send`.
+
+## Stage E: Three Devices and Wireshark
+
+**Not tested yet.**

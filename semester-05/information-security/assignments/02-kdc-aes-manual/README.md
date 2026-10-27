@@ -99,6 +99,25 @@ python kdc.py --config config/kdc.json
 
 Console commands: `ids`, `setkey <id> <key>`, `reload`, `help`, `quit`. Every request is logged by step, including the plaintext and the hex ciphertext. The session key is shown for demonstration; use `--mask-secrets` to hide it. Changing a key on the KDC does not change it on Alice or Bob.
 
+## Running the full flow on one machine (localhost demo)
+
+Use `127.0.0.1` as every host in the three config files, with the same `K_A` in `kdc.json` and `alice.json` and the same `K_B` in `kdc.json` and `bob.json`. Start in this order, each in its own terminal:
+
+```bash
+python kdc.py   --config config/kdc.json
+python bob.py   --config config/bob.json
+python alice.py --config config/alice.json
+```
+
+Alice starts steps 1-5 automatically. Plain text lines are sent to the peer; commands start with `/`:
+
+| Program | Commands |
+|---------|----------|
+| Alice   | `/send <text>`, `/rekey` (new `K_S`, repeats steps 1-5), `/setkey <K_A>`, `/status`, `/help`, `/quit` |
+| Bob     | `/send <text>`, `/setkey <K_B>`, `/status`, `/help`, `/quit` |
+
+Every step is logged with its direction, logical content, hex ciphertext, and verification result. `--mask-secrets` hides `K_S`. Changing a long-term key on one side requires changing it on the other side (and on the KDC) before `/rekey`.
+
 ## Project structure
 
 ```text
@@ -106,13 +125,13 @@ Console commands: `ids`, `setkey <id> <key>`, `reload`, `help`, `quit`. Every re
 ├── aes.py                  # done
 ├── common.py               # done
 ├── kdc.py                  # done
-├── alice.py                # planned (Stage D)
-├── bob.py                  # planned (Stage D)
-├── config/                 # planned: *.example.json only; real keys are git-ignored
+├── alice.py                # done
+├── bob.py                  # done
+├── config/                 # *.example.json only; real keys are git-ignored
 ├── tests/
 │   ├── test_aes.py         # done
 │   ├── test_protocol.py    # done
-│   └── test_network.py     # KDC over localhost done; Alice/Bob planned
+│   └── test_network.py     # KDC and end-to-end flow over localhost
 ├── docs/
 │   ├── architecture.md
 │   ├── protocol-flow.md
@@ -129,14 +148,15 @@ Console commands: `ids`, `setkey <id> <key>`, `reload`, `help`, `quit`. Every re
 - NIST SP 800-38A: CBC-AES128 (first two blocks).
 - Round-trip for many lengths, padding, random IV, wrong key, corrupted or truncated ciphertext, key-length validation, non-ASCII rejection, empty message.
 
-`tests/test_protocol.py` covers the protocol logic of steps 1-3, framing, validation, and config; `tests/test_network.py` exercises the KDC over TCP on `127.0.0.1`. Tests for steps 3-5 and Alice/Bob will come with Stage D; three-device tests with Stage E. Recorded results: [`docs/test-results.md`](docs/test-results.md).
+`tests/test_protocol.py` covers the protocol logic of steps 1-3, framing, validation, and config; `tests/test_network.py` exercises the KDC over TCP on `127.0.0.1`. End-to-end tests (KDC + Bob + Alice, real sockets) cover steps 1-5, two-way chat, rejection before step 5, wrong keys, corrupted tickets, wrong nonce answers, runtime key changes, and message edge cases. Three-device tests belong to Stage E. Recorded results: [`docs/test-results.md`](docs/test-results.md).
 
 ## Limitations
 
+- Alice receives no explicit confirmation of step 5: the protocol has five steps and no acknowledgment. Alice treats the session as authenticated after sending step 5; if Bob rejects it, an `ERROR` arrives and the session closes.
 - CBC without a MAC gives no integrity or authentication. Tampering is only caught by padding and field checks.
 - The ticket in step 3 has no timestamp, so the protocol does not prevent replay.
 - The AES code is not constant-time and is not side-channel resistant.
-- ASCII-only `K_S` (93 symbols, 16 characters) gives about 105 bits of entropy, not 128.
+- ASCII-only `K_S` (93 symbols, 16 characters) gives about 104.6 bits of entropy, not 128.
 - Step 1 identities and `N1`, IP addresses, and message metadata are visible on the network.
 
 ## References
