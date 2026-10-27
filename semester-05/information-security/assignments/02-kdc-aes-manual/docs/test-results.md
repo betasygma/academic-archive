@@ -74,4 +74,44 @@ Manual testing in the terminal using three CLI processes (KDC, Bob, and Alice) o
 
 ## Stage E: Three Devices and Wireshark
 
-**Not tested yet.**
+**Status: Not tested yet.** The Stage E procedure is in
+[`stage-e-guide.md`](stage-e-guide.md). Complete and record the three-device
+test before starting Wireshark analysis. Do not fill the result fields with
+planned or simulated outcomes.
+
+### Gate 1: Three-Device Test
+
+| Environment | Date | Result |
+|---|---|---|
+| KDC laptop (OS/Python) | Pending | Not run |
+| Alice laptop (OS/Python) | Pending | Not run |
+| Bob phone / Termux (OS/Python) | Pending | Not run |
+| Network / distinct LAN IPs | Pending | Not run |
+
+| Check | Result | Evidence / Notes |
+|---|---|---|
+| KDC accepts Alice's request (steps 1-2) | Pending | |
+| Alice verifies the response and sends steps 3-5 | Pending | |
+| Bob verifies step 5 and authenticates Alice | Pending | |
+| Alice-to-Bob message | Pending | |
+| Bob-to-Alice message | Pending | |
+
+Do not include long-term keys, local config files, or unredacted secrets in
+evidence. Record actual private addresses only if appropriate for the report;
+otherwise record that all three devices used distinct addresses on the same
+trusted LAN.
+
+### Gate 2: Wireshark Analysis
+
+**Status: Not started.** Start this gate only after Gate 1 passes.
+
+| Environment | Date | Result |
+|---|---|---|
+| Capture device / interface | Pending | Not run |
+| Wireshark version / filter | Pending | Not run |
+| TCP streams inspected | Pending | Not run |
+| Findings recorded | Pending | Not run |
+
+Record which protocol fields were visible, which values were ciphertext, and
+which network metadata remained observable. Keep `.pcapng` captures local and
+out of Git; use redacted screenshots or a written summary as evidence.
