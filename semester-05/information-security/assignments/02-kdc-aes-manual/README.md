@@ -51,7 +51,7 @@ plaintext, hexadecimal ciphertext, changeable non-hardcoded keys, three
 distinct device IP addresses, and two-way communication after step 5. The
 current automated networking results use localhost; they do not prove the
 three-device requirement. The original task brief is retained in
-[`docs/assignment-detail.txt`](docs/assignment-detail.txt).
+[`docs/assignment-detail.md`](docs/assignment-detail.md).
 
 ## Features
 
@@ -165,7 +165,7 @@ limitations. The manual three-device and Wireshark procedures are in the
 
 | Document | Purpose |
 |---|---|
-| [`docs/assignment-detail.txt`](docs/assignment-detail.txt) | Original assignment brief |
+| [`docs/assignment-detail.md`](docs/assignment-detail.md) | Original assignment brief |
 | [`docs/architecture.md`](docs/architecture.md) | Roles, configuration, topology, decisions, limitations |
 | [`docs/protocol-flow.md`](docs/protocol-flow.md) | Five-step protocol, wire format, validation |
 | [`docs/test-results.md`](docs/test-results.md) | Recorded test results and pending Stage E evidence |
