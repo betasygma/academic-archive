@@ -1,0 +1,7 @@
+{
+  "_comment": "Copy to config/bob.json (ignored by Git). The key is K_B and must match keys.bob in kdc.json. The host is Bob's bind address.",
+  "id": "bob",
+  "key": "CHANGE_ME_KEY_B2",
+  "host": "0.0.0.0",
+  "port": 5001
+}

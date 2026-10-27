@@ -1,0 +1,9 @@
+{
+  "_comment": "Copy to config/kdc.json (ignored by Git), then change the keys and host. Each key must be exactly 16 ASCII characters and unique to each identity.",
+  "host": "0.0.0.0",
+  "port": 5000,
+  "keys": {
+    "alice": "CHANGE_ME_KEY_A1",
+    "bob": "CHANGE_ME_KEY_B2"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "_comment": "Copy to config/alice.json (ignored by Git). The key is K_A and must match keys.alice in kdc.json. Replace the host values with the IP addresses of the KDC and Bob.",
+  "id": "alice",
+  "key": "CHANGE_ME_KEY_A1",
+  "kdc": {
+    "host": "192.168.1.10",
+    "port": 5000
+  },
+  "peer": {
+    "id": "bob",
+    "host": "192.168.1.30",
+    "port": 5001
+  }
+}
