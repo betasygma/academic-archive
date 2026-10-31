@@ -68,50 +68,57 @@ Mapping to the 12 required tests (all run on localhost, not across three differe
 | 9 | Change keys without restarting | `test_change_keys_without_restart`, `test_key_change_at_runtime` |
 | 10 | Empty messages, different lengths, and non-ASCII text | `test_various_message_lengths_empty_and_non_ascii`, `test_data_roundtrip_all_lengths` |
 | 11 | Reject communication before Step 5 | `test_cannot_send_before_authentication`, `test_bob_rejects_data_before_ticket_and_before_response` |
-| 12 | Wireshark across devices | **Manual test, Stage E, not yet run** |
+| 12 | Wireshark across devices | **Manual test, Stage E, completed 2026-10-31; see evidence below** |
 
 Manual testing in the terminal using three CLI processes (KDC, Bob, and Alice) on `127.0.0.1`. This covered bidirectional messaging, `/rekey`, `/status`, rejection of a short key through `/setkey`, rejection of non-ASCII messages, and sending messages that start with `/` using `/send`.
 
 ## Stage E: Three Devices and Wireshark
 
-**Status: Not tested yet.** The Stage E procedure is in
-[`stage-e-guide.md`](stage-e-guide.md). Complete and record the three-device
-test before starting Wireshark analysis. Do not fill the result fields with
-planned or simulated outcomes.
+**Status: Completed on 2026-10-31.** The screenshots listed below document a
+three-device run and a Wireshark review. The reproducible procedure is in
+[`stage-e-guide.md`](stage-e-guide.md). Device OS/Python versions and the
+Wireshark version are not visible in the supplied evidence and are therefore
+left unspecified.
 
 ### Gate 1: Three-Device Test
 
-| Environment | Date | Result |
-|---|---|---|
-| KDC laptop (OS/Python) | Pending | Not run |
-| Alice laptop (OS/Python) | Pending | Not run |
-| Bob phone / Termux (OS/Python) | Pending | Not run |
-| Network / distinct LAN IPs | Pending | Not run |
+| Role | Date | Environment / observed address | Result |
+|---|---|---|---|
+| KDC | 2026-10-31 | Laptop; distinct private LAN IP (literal omitted); Python version 3.15.2 | Listening on `0.0.0.0:5000`; both identities shown |
+| Alice | 2026-10-31 | Laptop; distinct private LAN IP (literal omitted); Python version 3.14.3 | Reached KDC and Bob; verified Part A and completed steps 3-5 |
+| Bob | 2026-10-31 | Android / Termux; distinct private LAN IP (literal omitted); Python version 3.14.8 | Listening on `0.0.0.0:5001`; authenticated Alice |
+| Network | 2026-10-31 | Three distinct private LAN addresses observed in application logs and capture | Three-device flow passed |
 
 | Check | Result | Evidence / Notes |
 |---|---|---|
-| KDC accepts Alice's request (steps 1-2) | Pending | |
-| Alice verifies the response and sends steps 3-5 | Pending | |
-| Bob verifies step 5 and authenticates Alice | Pending | |
-| Alice-to-Bob message | Pending | |
-| Bob-to-Alice message | Pending | |
+| KDC accepts Alice's request (steps 1-2) | Pass | [KDC listener](../assets/screenshots/g1-01-kdc-running.png), [Alice steps 1-2](../assets/screenshots/g1-02-alice-kdc-steps1-2.png), [KDC steps 1-2 log](../assets/screenshots/g1-03-kdc-log-steps1-2.png) |
+| Alice verifies the response and sends steps 3-5 | Pass | [Alice steps 3-5](../assets/screenshots/g1-04-alice-steps3-5.png); Alice reports the ID and nonce checks successful |
+| Bob verifies step 5 and authenticates Alice | Pass | [Bob authentication log](../assets/screenshots/g1-05-bob-auth-ok.jpg); Bob reports verification successful |
+| Alice-to-Bob message | Pass | [Alice-to-Bob chat](../assets/screenshots/g1-06-chat-alice-to-bob.jpg); Bob receives `Hello Bob!` |
+| Bob-to-Alice message | Pass | [Bob-to-Alice chat](../assets/screenshots/g1-07-chat-bob-to-alice.png); Alice receives `Hello Alice!` |
 
-Do not include long-term keys, local config files, or unredacted secrets in
-evidence. Record actual private addresses only if appropriate for the report;
-otherwise record that all three devices used distinct addresses on the same
-trusted LAN.
+The private addresses above are the addresses visible in the supplied
+screenshots for this test run; they are not fixed configuration values. The
+screenshots mask `K_S` in the application logs. They still show private LAN
+addresses, IDs, nonces, ciphertexts, and the example chat text; redact those
+details as appropriate before sharing the evidence publicly.
 
 ### Gate 2: Wireshark Analysis
 
-**Status: Not started.** Start this gate only after Gate 1 passes.
+**Status: Completed on 2026-10-31, after the Gate 1 application run.**
 
-| Environment | Date | Result |
+| Item | Date | Observed result / evidence |
 |---|---|---|
-| Capture device / interface | Pending | Not run |
-| Wireshark version / filter | Pending | Not run |
-| TCP streams inspected | Pending | Not run |
-| Findings recorded | Pending | Not run |
+| Capture device / interface | 2026-10-31 | Alice laptop, Wi-Fi interface; Wireshark version not recorded. [Capture setup](../assets/screenshots/g2-01-capture-setup.png) |
+| Display filter | 2026-10-31 | `tcp.port == 5000 \|\| tcp.port == 5001`. [Filtered overview](../assets/screenshots/g2-02-display-filter-overview.png) |
+| KDC–Alice TCP stream | 2026-10-31 | Follow TCP Stream shows plaintext `REQ` fields (`ida`, `idb`, `n1`) and a `RESP` containing encrypted `part_a` and `ticket`. [Stream](../assets/screenshots/g2-03-tcp-stream-kdc-alice.png) |
+| Alice–Bob TCP stream | 2026-10-31 | Follow TCP Stream shows `TICKET`, `CHALLENGE`, `RESPONSE`, and bidirectional `DATA` JSON messages; encrypted values are represented as hex. [Stream](../assets/screenshots/g2-04-tcp-stream-alice-bob.png) |
+| Plaintext and ciphertext observations | 2026-10-31 | The message types, JSON field names, identities and `N1` are visible; encrypted protocol contents and chat payloads appear as hex ciphertext. [Visible fields](../assets/screenshots/g2-05-visible-plaintext-fields.png), [ciphertext fields](../assets/screenshots/g2-06-ciphertext-fields.png) |
 
-Record which protocol fields were visible, which values were ciphertext, and
-which network metadata remained observable. Keep `.pcapng` captures local and
-out of Git; use redacted screenshots or a written summary as evidence.
+The supplied evidence consists of screenshots; the raw `.pcapng` capture is
+not present in the screenshot folder. The capture setup screenshot shows
+background traffic as well as the application traffic, so the display filter
+is important when isolating the two application ports. IP addresses, ports,
+message types, sizes, and timing remain observable. This capture demonstrates
+protocol visibility; it does not demonstrate confidentiality of network
+metadata. Keep any retained raw capture local and out of Git.
