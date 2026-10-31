@@ -17,7 +17,7 @@ The system has three entities on three different IP addresses. The KDC distribut
 | Transport | TCP, with one persistent Alice–Bob connection |
 | Nonce | Random 64-bit integer (`secrets.randbits(64)`), sent as decimal ASCII |
 | `f(N2)` | `N2 + 1 (mod 2^64)` |
-| `K_S` | 16 characters from 93 symbols (ASCII 0x21-0x7E, excluding the pipe character (`` | ``)) |
+| `K_S` | 16 characters from 93 symbols (ASCII 0x21-0x7E, excluding the pipe character (` \| `)) |
 | Long-term keys | `K_A` and `K_B` are stored in local config files, not in the source code or Git |
 | Libraries | `secrets`, `socket`, `json`, and `threading` are allowed. AES and the KDC protocol are implemented manually. |
 
