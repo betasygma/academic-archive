@@ -1,6 +1,6 @@
 # Architecture
 
-Status: **Design baseline; Stage E validation pending**. All components (`aes.py`, `common.py`, `kdc.py`, `alice.py`, `bob.py`) have been implemented and Stage D passed on localhost. Three-device network testing and Wireshark analysis have not yet been run.
+Status: **Implemented and manually validated across three devices (Stage E, 2026-10-31)**. All components (`aes.py`, `common.py`, `kdc.py`, `alice.py`, `bob.py`) have been implemented; Stage D automated tests run on localhost. Stage E application and Wireshark evidence is recorded in [`test-results.md`](test-results.md).
 
 ## Goal
 
@@ -17,17 +17,17 @@ The system has three entities on three different IP addresses. The KDC distribut
 | Transport | TCP, with one persistent Alice–Bob connection |
 | Nonce | Random 64-bit integer (`secrets.randbits(64)`), sent as decimal ASCII |
 | `f(N2)` | `N2 + 1 (mod 2^64)` |
-| `K_S` | 16 characters from 93 symbols (ASCII 0x21-0x7E, excluding the backtick character (`` ` ``)) |
+| `K_S` | 16 characters from 93 symbols (ASCII 0x21-0x7E, excluding the pipe character (`` | ``)) |
 | Long-term keys | `K_A` and `K_B` are stored in local config files, not in the source code or Git |
 | Libraries | `secrets`, `socket`, `json`, and `threading` are allowed. AES and the KDC protocol are implemented manually. |
 
-## Network Topology (Stage E Target; Not Yet Validated)
+## Network Topology (Stage E Validated)
 
 ```mermaid
 sequenceDiagram
-    participant KDC as Laptop 1 (KDC)<br/>IP_KDC:5000
-    participant Alice as Laptop 2 (Alice)
-    participant Bob as Phone / Termux (Bob)<br/>IP_BOB:5001
+    participant KDC as Laptop 1 (KDC)<br/>LAN IP:5000
+    participant Alice as Laptop 2 (Alice)<br/>Distinct LAN IP
+    participant Bob as Phone / Termux (Bob)<br/>LAN IP:5001
 
     rect rgba(100, 150, 255, 0.15)
         Alice->>KDC: (1) REQ
@@ -47,15 +47,15 @@ sequenceDiagram
 - Alice opens two TCP connections: one to the KDC for steps 1–2, which is then closed, and another to Bob for steps 3–5 and subsequent data communication.
 - Bob never connects to the KDC directly.
 - Device setup: Bob runs on a phone using Termux. The laptop provides the Wi-Fi hotspot, not the phone.
-- Use the actual private LAN IP addresses assigned to the KDC laptop and Bob
-  phone in Alice's config. The values in the example configs are illustrative,
-  not assigned addresses.
+- The Stage E evidence confirms three distinct private LAN addresses. Their
+  literal values are omitted here because they are local network details and
+  can change between runs.
 - The target ports are TCP 5000 for the KDC and TCP 5001 for Bob. Both
   listeners bind to `0.0.0.0`; allow inbound traffic only on the trusted local
   network when the host firewall requires a rule.
-- Before testing, verify the hotspot permits communication between clients.
-  The three-device topology remains unverified until the manual Stage E test
-  passes. See [`stage-e-guide.md`](stage-e-guide.md) for the ordered procedure.
+- The Stage E run verified communication across these three devices and the
+  two listener ports. For the procedure and evidence, see
+  [`stage-e-guide.md`](stage-e-guide.md) and [`test-results.md`](test-results.md).
 
 ## Key Ownership
 
@@ -74,11 +74,13 @@ sequenceDiagram
 
 ## File Structure
 
-- `aes.py` (B)
-- `common.py`, `kdc.py`, `config/*.example.json` (C)
-- `alice.py`, `bob.py` (D)
-- `tests/` — Test files.
-- `docs/` — Documentation.
+- `aes.py` (Stage B)
+- `common.py`, `kdc.py`, `config/*.example.json` (Stage C)
+- `alice.py`, `bob.py` (Stage D)
+- `tests/` — Test files
+- `docs/`, `README.md` — Documentation and instructions.
+- `config/*.json` — Local configuration files (not in Git).
+- `assets/screenshots/` — Evidence (Stage E).
 
 ## Known Limitations (Intentional)
 

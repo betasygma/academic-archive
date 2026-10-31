@@ -55,12 +55,9 @@ sequenceDiagram
 | B | Manual AES-128-CBC and AES test vectors | Complete; 16 tests recorded |
 | C | Shared protocol utilities, configuration, KDC, and protocol/network tests | Complete; 58 tests recorded, localhost only |
 | D | Alice/Bob clients and bidirectional communication | Complete; 82 tests recorded, localhost only |
-| E | Three-device test, Wireshark analysis, and demo guide | Guide prepared; three-device test and Wireshark analysis not run |
+| E | Three-device test, Wireshark analysis, and demo guide | Completed; procedure and screenshot evidence recorded |
 
-Stage D's automated and manual networking results use localhost and do not
-verify communication across three distinct device IP addresses. Stage E
-results are pending; see [Test Results](docs/test-results.md) and the
-[Stage E guide](docs/stage-e-guide.md). The original assignment brief is in 
+The original assignment brief is in
 [`docs/assignment-detail.md`](docs/assignment-detail.md).
 
 ## Features
@@ -101,9 +98,6 @@ network topology, and design decisions.
 
 - Python 3.7 or newer.
 - Standard library only.
-
-No `requirements.txt` is needed because the project has no third-party
-dependencies.
 
 ## Quick Start
 
@@ -154,8 +148,9 @@ new session.
 The test suite includes FIPS 197 AES vectors, NIST SP 800-38A CBC vectors,
 protocol and configuration validation, TCP framing, KDC networking, and
 end-to-end handshake and bidirectional-message tests. Recorded environments
-and results are in [Test Results](docs/test-results.md). All recorded network
-tests so far are localhost-only.
+and results are in [Test Results](docs/test-results.md). Automated networking
+tests run on localhost; the separate manual Stage E test covers three devices
+on a LAN.
 
 ## Limitations
 
@@ -168,8 +163,9 @@ tests so far are localhost-only.
 - Network metadata and step-1 identities and nonce remain observable.
 
 See [Architecture](docs/architecture.md) for the full list of design
-limitations. The manual three-device and Wireshark procedures are in the
-[Stage E guide](docs/stage-e-guide.md); neither has been completed yet.
+limitations. The manual three-device and Wireshark procedure and results are
+in the [Stage E guide](docs/stage-e-guide.md) and
+[Test Results](docs/test-results.md).
 
 ## Documentation
 
@@ -178,7 +174,7 @@ limitations. The manual three-device and Wireshark procedures are in the
 | [`docs/assignment-detail.md`](docs/assignment-detail.md) | Original assignment brief |
 | [`docs/architecture.md`](docs/architecture.md) | Roles, configuration, topology, decisions, limitations |
 | [`docs/protocol-flow.md`](docs/protocol-flow.md) | Five-step protocol, wire format, validation |
-| [`docs/test-results.md`](docs/test-results.md) | Recorded test results and pending Stage E evidence |
+| [`docs/test-results.md`](docs/test-results.md) | Automated test results and recorded Stage E evidence |
 | [`docs/stage-e-guide.md`](docs/stage-e-guide.md) | Three-device test followed by Wireshark procedure |
 | [`docs/security-review.md`](docs/security-review.md) | Final security review |
 

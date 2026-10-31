@@ -1,14 +1,18 @@
-# Stage E: Three-Device Test and Wireshark Guide
+# Stage E: Three-Device Results and Wireshark Guide
 
-Stage E has two gates. Complete and record the three-device test first. Start the
-Wireshark analysis only after the application flow works across three distinct
-devices and IP addresses.
+The Stage E run documented in this project was completed on **2026-10-31**.
+The three-device application test passed before the Wireshark review. Recorded
+results and links to the screenshot evidence are in
+[`test-results.md`](test-results.md). This guide retains the setup and
+troubleshooting steps for future reproductions.
 
 ## Starting Point and Scope
 
-Stage D is committed and pushed. The automated suite has passed on localhost,
-but that does not verify routing, firewall rules, or the application on three
-separate devices. No three-device or Wireshark result has been recorded yet.
+The automated suite has passed on localhost, but that does not verify routing,
+firewall rules, or the application on separate devices. The recorded Stage E
+run used three devices and three distinct private LAN addresses. Device
+OS/Python versions and the Wireshark version were not recorded in the supplied
+screenshots; do not infer them from the screenshots.
 
 The target topology is:
 
@@ -213,12 +217,14 @@ test network.
 
 ## Stage E Completion Checklist
 
-- [ ] Gate 1 completed on three distinct devices and three distinct LAN IPs.
-- [ ] Alice authenticated successfully and both message directions were
+- [x] Gate 1 completed on three distinct devices and three distinct LAN IPs.
+- [x] Alice authenticated successfully and both message directions were
   verified.
-- [ ] Gate 1 environment and observed results recorded in
-  `docs/test-results.md`.
-- [ ] Gate 2 capture completed only after Gate 1 passed.
-- [ ] Wireshark observations recorded; capture stays local and is not committed.
-- [ ] No real config, long-term key, or unredacted secret-bearing evidence added
-  to Git.
+- [x] Gate 1 environment observations and results recorded in
+  `docs/test-results.md`; unrecorded OS/Python versions are identified as such.
+- [x] Gate 2 capture and stream inspection completed after the successful
+  application test.
+- [x] Wireshark observations and available screenshot evidence recorded.
+- [x] No long-term key or real local config is included in the documented
+  evidence. Review screenshots for private network details before public
+  sharing. The raw `.pcapng` file is not included with the supplied screenshots.

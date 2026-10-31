@@ -1,9 +1,9 @@
 # Protocol Flow (5 Steps)
 
 **Status:** All five steps and bidirectional communication are implemented
-(`common.py`, `kdc.py`, `alice.py`, `bob.py`). Automated and manual Stage D
-tests ran on localhost; the three-device Stage E test is pending. See the
-[Stage E guide](stage-e-guide.md) before Wireshark analysis.
+(`common.py`, `kdc.py`, `alice.py`, `bob.py`). Automated Stage D tests run on
+localhost; a three-device Stage E test and Wireshark review were completed on
+2026-10-31. See [Test Results](test-results.md) for outcomes and evidence.
 
 ```mermaid
 sequenceDiagram
