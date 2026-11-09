@@ -1,0 +1,46 @@
+// Simple Twitter-like Schema for Students
+// Perfect for learning Prisma basics!
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+
+  posts Post[]
+  likes Like[]
+
+  @@map("users")
+}
+
+model Post {
+  id       Int    @id @default(autoincrement())
+  title    String
+  content  String
+  authorId Int
+
+  author User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes  Like[]
+
+  @@map("posts")
+}
+
+model Like {
+  id     Int @id @default(autoincrement())
+  userId Int
+  postId Int
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("likes")
+}
