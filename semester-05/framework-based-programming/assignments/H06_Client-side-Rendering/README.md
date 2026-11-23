@@ -1,4 +1,4 @@
-**# H06 - Client-side Rendering**
+# H06 - Client-side Rendering
 
 [![NestJS 11](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com/)
 [![Prisma 6](https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
