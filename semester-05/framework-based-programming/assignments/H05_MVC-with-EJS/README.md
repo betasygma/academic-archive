@@ -200,12 +200,21 @@ and EJS templates.
 
 ## Related assignments
 
-H05 continues the database-backed posts work from H04/H03 and introduces
-server-side rendering with EJS. H06 uses a separate JSON API and a
-client-rendered Next.js frontend to revisit the same posts-board interaction.
+H05 adapts the Prisma and SQLite approach from H04 to a server-rendered posts
+board with replies. [H04 - Database Integration](../H04_Database-Integration/README.md)
+compares the two database integrations, while [H03 - NestJS CRUD](../H03_NestJS-CRUD/README.md)
+is a related NestJS CRUD and validation example focused on a users API.
+
+[H06 - Client-side Rendering](../H06_Client-side-Rendering/README.md) revisits
+the posts-board interaction with a separate JSON API and a client-rendered
+Next.js frontend.
 
 ## 🧭 Navigation
 
-- [← Framework-Based Programming](../../README.md)
-- [Previous: H04 - Database Integration](../H04_Database-Integration/README.md)
-- [Next: H06 - Client-side Rendering](../H06_Client-side-Rendering/README.md)
+<table>
+  <tr>
+    <td align="left">⬅️ <a href="../H04_Database-Integration/README.md"><strong>Previous</strong><br>H04 · Database Integration</a></td>
+    <td align="center">🏠 <a href="../../README.md"><strong>Framework-Based Programming</strong></a></td>
+    <td align="right"><a href="../H06_Client-side-Rendering/README.md"><strong>Next</strong><br>H06 · Client-side Rendering</a> ➡️</td>
+  </tr>
+</table>

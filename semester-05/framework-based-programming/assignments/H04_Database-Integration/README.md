@@ -1,4 +1,4 @@
-# H04 - Database Integration
+# 🗄️ H04 - Database Integration
 
 [![NestJS 11](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com/)
 [![TypeScript 5](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -16,6 +16,9 @@ for users, posts, and likes, and store data in separate local SQLite databases.
 **Framework:** NestJS 11  
 **Databases:** SQLite (`ecommerce.sqlite` and `prisma/dev.db`)
 
+> [!IMPORTANT]
+> This assignment compares two database integrations rather than claiming one adapter is universally preferable. Differences in error mapping and provider architecture are intentional observations.
+
 ## Contents
 
 - [Features](#features)
@@ -26,6 +29,7 @@ for users, posts, and likes, and store data in separate local SQLite databases.
 - [Tests](#tests)
 - [Project structure](#project-structure)
 - [Documentation and evidence](#documentation-and-evidence)
+- [Related assignments](#related-assignments)
 - [Limitations](#limitations)
 
 ## Features
@@ -184,6 +188,18 @@ screenshots in [`docs/img/`](docs/img/) and discussed in the report.
 - [E2E test result screenshot](ecommerce/docs/img/06-test-e2e-pass.png)
 - [Manual endpoint and error screenshots](ecommerce/docs/img/)
 
+## Related assignments
+
+H03 is a related NestJS CRUD example focused on users. This assignment shifts
+the focus to relational persistence and compares TypeORM with Prisma for users,
+posts, and likes. H05 then applies Prisma and SQLite to a server-rendered posts
+board.
+
+- [H03 - NestJS CRUD](../H03_NestJS-CRUD/README.md) demonstrates NestJS
+  controllers, validation, and CRUD patterns.
+- [H05 - MVC with EJS](../H05_MVC-with-EJS/README.md) uses persistent data in a
+  browser-facing, server-rendered application.
+
 ## Limitations
 
 - This is a learning assignment, not a production-ready service.
@@ -195,3 +211,13 @@ screenshots in [`docs/img/`](docs/img/) and discussed in the report.
 - SQLite databases are local files and are intentionally excluded from Git.
 - The API has no authentication, authorization, pagination, or production
   database migration workflow.
+
+## 🧭 Navigation
+
+<table>
+  <tr>
+    <td align="left">⬅️ <a href="../H03_NestJS-CRUD/README.md"><strong>Previous</strong><br>H03 · NestJS CRUD</a></td>
+    <td align="center">🏠 <a href="../../README.md"><strong>Framework-Based Programming</strong></a></td>
+    <td align="right"><a href="../H05_MVC-with-EJS/README.md"><strong>Next</strong><br>H05 · MVC with EJS</a> ➡️</td>
+  </tr>
+</table>

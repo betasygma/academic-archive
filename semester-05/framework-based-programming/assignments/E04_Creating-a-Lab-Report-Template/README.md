@@ -1,4 +1,4 @@
-# E04: Creating a Lab Report Template
+# 🧪 E04: Creating a Lab Report Template
 
 A reusable Typst template for laboratory reports, demonstrated with a sample
 report about bioluminescent fungi. The report content and page styling are kept
@@ -7,6 +7,9 @@ in separate source files.
 **Course:** Framework-Based Programming — Assignment E04
 <br>
 **Typesetting:** Typst
+
+> [!TIP]
+> Keep `main.typ`, `template.typ`, and the `res/` assets together. Relative asset paths and bibliography data are part of a successful build.
 
 ## Table of Contents
 
@@ -134,3 +137,13 @@ separate from presentation.
 
 * [PBKK E04 in-class template](PBKK_E04_Inclass-Template.pdf)
 * [Target PDF](target.pdf)
+
+## 🧭 Navigation
+
+<table>
+  <tr>
+    <td align="left">⬅️ <a href="../E03_Portfolio-in-Typst/README.md"><strong>Previous</strong><br>E03 · Portfolio in Typst</a></td>
+    <td align="center">🏠 <a href="../../README.md"><strong>Framework-Based Programming</strong></a></td>
+    <td align="right"><a href="../E05_Creating-a-Book-Template/README.md"><strong>Next</strong><br>E05 · Book Template</a> ➡️</td>
+  </tr>
+</table>

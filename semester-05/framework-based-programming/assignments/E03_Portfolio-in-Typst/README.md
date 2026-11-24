@@ -1,4 +1,4 @@
-# E03: Portfolio in Typst
+# 🧑‍💼 E03: Portfolio in Typst
 
 A configurable CV and portfolio document generated with Typst. The content is
 stored separately from the layout: `configuration.yaml` holds profile and
@@ -7,6 +7,9 @@ portfolio data, while `main.typ` maps that data into the `vantage-cv` template.
 **Course:** Framework-Based Programming — Assignment E03
 <br>
 **Typesetting:** Typst
+
+> [!CAUTION]
+> Before publishing or sharing this CV, review `configuration.yaml` for personal contact details, profile links, education information, and other sensitive content.
 
 ## Table of Contents
 
@@ -107,3 +110,13 @@ file.
 
 Review contact details, profile links, and other personal information in
 `configuration.yaml` before publishing or sharing the source or generated PDF.
+
+## 🧭 Navigation
+
+<table>
+  <tr>
+    <td align="left">⬅️ <a href="../E02_Writing-a-Paper-in-Typst/README.md"><strong>Previous</strong><br>E02 · Writing a Paper in Typst</a></td>
+    <td align="center">🏠 <a href="../../README.md"><strong>Framework-Based Programming</strong></a></td>
+    <td align="right"><a href="../E04_Creating-a-Lab-Report-Template/README.md"><strong>Next</strong><br>E04 · Lab Report Template</a> ➡️</td>
+  </tr>
+</table>

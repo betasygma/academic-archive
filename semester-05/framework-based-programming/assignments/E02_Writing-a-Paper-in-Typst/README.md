@@ -1,4 +1,4 @@
-# E02: Writing a Paper in Typst
+# 📝 E02: Writing a Paper in Typst
 
 An academic-paper layout built with Typst and the [`juti`](https://juti.if.its.ac.id/) package. The included
 source demonstrates common research-paper elements using an illustrative paper
@@ -7,6 +7,9 @@ about luminate decay kinetics.
 **Course:** Framework-Based Programming — Assignment E02
 <br>
 **Typesetting:** Typst
+
+> [!NOTE]
+> The included research-paper content is illustrative. Its findings, data, subject matter, and DOI are fictional and should not be cited as verified research.
 
 ## Table of Contents
 
@@ -121,3 +124,13 @@ with those records. Adjust shared template settings in `setup.typ`; replace
 The paper is an illustrative typesetting sample, not a report of verified
 scientific findings. Its subject matter, experimental results, and DOI are
 fictitious, as indicated in the source.
+
+## 🧭 Navigation
+
+<table>
+  <tr>
+    <td align="left">&nbsp;</td>
+    <td align="center">🏠 <a href="../../README.md"><strong>Framework-Based Programming</strong></a></td>
+    <td align="right"><a href="../E03_Portfolio-in-Typst/README.md"><strong>Next</strong><br>E03 · Portfolio in Typst</a> ➡️</td>
+  </tr>
+</table>

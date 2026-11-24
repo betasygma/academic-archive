@@ -1,4 +1,4 @@
-# H03 - NestJS CRUD
+# 🧱 H03 - NestJS CRUD
 
 A users REST API implemented with NestJS, revisiting the service built from
 scratch in [H01 - Life Before Frameworks](../H01_Life-Before-Frameworks/README.md).
@@ -10,6 +10,9 @@ dependency injection, DTO validation, and built-in request handling.
 **Language:** TypeScript  
 **Framework:** NestJS 12  
 **Storage:** In-memory array
+
+> [!TIP]
+> Compare this implementation with [H01](../H01_Life-Before-Frameworks/README.md) to see how framework conventions replace manual HTTP plumbing.
 
 ## Contents
 
@@ -148,3 +151,13 @@ limitations. The editable Typst source is
 
 H01 implements this API without a web framework and persists data in SQLite:
 [H01 - Life Before Frameworks](../H01_Life-Before-Frameworks/README.md).
+
+## 🧭 Navigation
+
+<table>
+  <tr>
+    <td align="left">⬅️ <a href="../H02_Frameworks-and-AI-in-Application-Development/README.md"><strong>Previous</strong><br>H02 · Frameworks and AI</a></td>
+    <td align="center">🏠 <a href="../../README.md"><strong>Framework-Based Programming</strong></a></td>
+    <td align="right"><a href="../H04_Database-Integration/README.md"><strong>Next</strong><br>H04 · Database Integration</a> ➡️</td>
+  </tr>
+</table>

@@ -1,4 +1,4 @@
-# H01 - Life Before Frameworks
+# 🌱 H01 - Life Before Frameworks
 
 A users REST API built with Node.js's built-in `node:http` module, without
 Express or another web framework. This assignment makes the work normally
@@ -9,6 +9,9 @@ and response serialization—explicit.
 **Runtime:** Node.js 22+  
 **Language:** TypeScript  
 **Storage:** SQLite with `better-sqlite3`
+
+> [!NOTE]
+> This assignment is a personal course implementation that demonstrates the HTTP, routing, validation, and persistence work normally delegated to a web framework.
 
 ## Contents
 
@@ -135,3 +138,13 @@ evidence, and limitations. Its Typst source is
 
 H03 implements the same users API using NestJS:
 [H03 - NestJS CRUD](../H03_NestJS-CRUD/README.md).
+
+## 🧭 Navigation
+
+<table>
+  <tr>
+    <td align="left">&nbsp;</td>
+    <td align="center">🏠 <a href="../../README.md"><strong>Framework-Based Programming</strong></a></td>
+    <td align="right"><a href="../H02_Frameworks-and-AI-in-Application-Development/README.md"><strong>Next</strong><br>H02 · Frameworks and AI</a> ➡️</td>
+  </tr>
+</table>

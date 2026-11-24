@@ -1,4 +1,4 @@
-# H06 - Client-side Rendering
+# ⚛️ H06 - Client-side Rendering
 
 [![NestJS 11](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com/)
 [![Prisma 6](https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io/)
@@ -10,16 +10,19 @@
 
 This practical asks you to complete a posts board with replies as two
 applications: a NestJS JSON API and a Next.js frontend that fetches data in the
-browser. It continues the E05 posts-board exercise and compares EJS server-side
-rendering with React client-side rendering. The starter includes unfinished
-backend endpoints and frontend mock actions; use the practicals guide to
-complete them.
+browser. It continues the [H05 posts-board exercise](../H05_MVC-with-EJS/README.md):
+H05 uses EJS for server-side rendering, while H06 uses React for client-side
+rendering. The starter includes unfinished backend endpoints and frontend mock
+actions; use the practicals guide to complete them.
 
 **Course:** Framework-Based Programming, Assignment H06  
 **Language:** TypeScript  
 **Backend:** NestJS 11, Prisma 6, SQLite  
 **Frontend:** Next.js 15, React 19  
 **Package manager:** pnpm
+
+> [!WARNING]
+> Both development servers are required. Keep the backend on port `3000` and the frontend on port `3001`, then verify CORS and network requests in browser DevTools.
 
 ## Contents
 
@@ -198,6 +201,16 @@ compiled `docs/main.pdf`.
 
 ## Related assignment
 
-H06 continues the E05 posts-board exercise referenced by the course brief,
-replacing server-rendered pages with a browser-rendered client and a separate
-JSON API.
+H06 revisits the [H05 posts-board exercise](../H05_MVC-with-EJS/README.md) with
+a separate NestJS JSON API and a browser-rendered Next.js client instead of
+EJS server-rendered pages.
+
+## 🧭 Navigation
+
+<table>
+  <tr>
+    <td align="left">⬅️ <a href="../H05_MVC-with-EJS/README.md"><strong>Previous</strong><br>H05 · MVC with EJS</a></td>
+    <td align="center">🏠 <a href="../../README.md"><strong>Framework-Based Programming</strong></a></td>
+    <td align="right">&nbsp;</td>
+  </tr>
+</table>

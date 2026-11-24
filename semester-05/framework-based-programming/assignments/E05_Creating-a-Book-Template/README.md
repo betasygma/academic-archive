@@ -1,4 +1,4 @@
-# E05: Creating a Book Template
+# 📚 E05: Creating a Book Template
 
 Reusable Typst book template demonstrated through an edition of Marcus Aurelius'
 _Meditations_. The assignment combines document configuration, reusable page
@@ -9,6 +9,9 @@ components, and the source text to produce a typeset book.
 **Document:** _Meditations_, translated by George Long
 <br>
 **Typesetting:** Typst
+
+> [!IMPORTANT]
+> The sample configuration and twelve-section validator are tailored to Marcus Aurelius' _Meditations_. Reusing this template for another book may require heading, metadata, font, and front-matter adjustments.
 
 ## Table of Contents
 
@@ -191,3 +194,13 @@ The cover image path is relative to the Typst source and can be changed through
 	`BOOK TWELVE`.
 * A Typst build depends on the configured font and the external `droplet`
 	package being available.
+
+## 🧭 Navigation
+
+<table>
+  <tr>
+    <td align="left">⬅️ <a href="../E04_Creating-a-Lab-Report-Template/README.md"><strong>Previous</strong><br>E04 · Lab Report Template</a></td>
+    <td align="center">🏠 <a href="../../README.md"><strong>Framework-Based Programming</strong></a></td>
+    <td align="right">&nbsp;</td>
+  </tr>
+</table>
